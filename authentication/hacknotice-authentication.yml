@@ -1,0 +1,75 @@
+generated: '2026-08-22'
+method: searched
+source:
+- https://api-docs.hacknotice.com (HackNotice-API collection description)
+- https://github.com/HackNotice/n8n-nodes-hacknotice — credentials/HackNoticeApi.credentials.ts
+- https://github.com/HackNotice/n8n-nodes-hacknotice-mcp — credentials/HackNoticeMcpApi.credentials.ts
+- openapi/hacknotice-openapi.yml
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+  oauth2_flows: []
+  note: 'Three header API-key schemes, no OAuth 2.0 and no OpenID Connect. /.well-known/openid-configuration and
+    /.well-known/oauth-authorization-server both return 404 on api.hacknotice.com, and the MCP host returns 404
+    on both OAuth metadata paths. There is therefore no scopes/ artifact for this provider: with no OAuth surface
+    there is no scope model to derive.'
+schemes:
+- name: jwtAuth
+  type: apiKey
+  in: header
+  parameter: Authorization
+  description: 'Session token from POST /auth/sign_in, sent as the literal prefix "JWT " followed by the token —
+    e.g. Authorization: JWT <token>. Note this is HackNotice''s own scheme, not RFC 6750 Bearer.'
+  sources:
+  - openapi/hacknotice-openapi.yml
+- name: apiKeyAuth
+  type: apiKey
+  in: header
+  parameter: apikey
+  description: Per-account API key issued by HackNotice, sent in the lower-case "apikey" header alongside the JWT
+    on most operations.
+  sources:
+  - openapi/hacknotice-openapi.yml
+- name: integrationKeyAuth
+  type: apiKey
+  in: header
+  parameter: X-HackNotice-Integration-Key
+  description: Per-user HackNotice integration secret (hn_ik_ prefix). Single-header alternative to apikey + email
+    + password; also the credential used by the HackNotice MCP server.
+  sources:
+  - openapi/hacknotice-openapi.yml
+docs: https://api-docs.hacknotice.com
+flows:
+- name: apiKey + email + password
+  steps:
+  - POST /auth/sign_in with form fields email and password, sending the apikey header
+  - POST /auth/twofa_sign_in instead when the account has 2FA enabled
+  - 'Send the returned token on every subsequent call as Authorization: JWT <token>'
+  - GET /auth/sign_out or /auth/sign_out_all to end sessions
+  token: JWT (RFC 7519) carrying email, customer_id, _id, iat and exp claims. Tenant scoping is inside the token
+    — customer_id is never passed as a parameter.
+  gotcha: The literal prefix is "JWT ", not "Bearer ". HackNotice calls this out explicitly in its own documentation.
+    A standard RFC 6750 Bearer client fails with 401 and no explanation.
+- name: integration key
+  steps:
+  - 'Send X-HackNotice-Integration-Key: hn_ik_... on every request. No sign-in round trip.'
+  token: Opaque per-user secret, hn_ik_ prefix.
+  note: Same credential the HackNotice MCP server validates on every tools/call.
+two_factor:
+  supported: true
+  operation: post2FaSignIn (POST /auth/twofa_sign_in)
+sso:
+  saml2: true
+  providers:
+  - Microsoft Entra ID (Azure AD)
+  - Okta
+  docs:
+  - https://hacknotice.zendesk.com/hc/en-us/articles/16860907619860-Microsoft-Azure-AD-EntraID-SAML-SSO-Integration
+  - https://hacknotice.zendesk.com/hc/en-us/articles/16860841528724-OKTA-SAML-Integration
+  note: Platform sign-in only. SAML does not mint an API credential.
+access_gate:
+  approved_accounts_only: true
+  consultation_required: 30 minutes, before API usage
+  source: https://hacknotice.zendesk.com/hc/en-us/articles/13540425661844-API

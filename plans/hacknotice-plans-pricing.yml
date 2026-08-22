@@ -1,0 +1,58 @@
+generated: '2026-08-22'
+method: searched
+source: https://hacknotice.com/pricing/
+plan_count: 4
+currency: USD
+billing_period: annual
+note: 'HackNotice publishes list prices for its third-party / vendor-monitoring product on a public
+  pricing page — unusual for this market, where "contact sales" is the norm. The tiers differ only
+  by the number of monitored vendors; the published feature list is identical across all four.
+  Pricing is annual and quoted in USD. The pricing page itself sits behind a Cloudflare managed
+  challenge that returns HTTP 403 to non-browser clients (including our crawler and the WebFetch
+  renderer), so the tier values here were read from the search index''s rendering of
+  hacknotice.com/pricing/ rather than from a direct fetch; the page demonstrably exists and is
+  indexed under the title "HackNotice Pricing – HackNotice". No machine-readable pricing or catalog
+  endpoint is published. API access is NOT a priced line item on this page.'
+plans:
+- name: Starter
+  price: 15000
+  currency: USD
+  period: year
+  included:
+    vendors: 50
+  features: [Continuous vendor monitoring, Real-time breach alerts, Automated vendor assessments, Active adversary trends]
+  overage: null
+- name: Growth
+  price: 30000
+  currency: USD
+  period: year
+  included:
+    vendors: 150
+  features: [Continuous vendor monitoring, Real-time breach alerts, Automated vendor assessments, Active adversary trends]
+  overage: null
+- name: Business
+  price: 70000
+  currency: USD
+  period: year
+  included:
+    vendors: 500
+  features: [Continuous vendor monitoring, Real-time breach alerts, Automated vendor assessments, Active adversary trends]
+  overage: null
+- name: Enterprise
+  price: 120000
+  currency: USD
+  period: year
+  included:
+    vendors: 1000
+  features: [Continuous vendor monitoring, Real-time breach alerts, Automated vendor assessments, Active adversary trends]
+  overage: null
+free_tier:
+  name: Instant Check
+  url: https://hacknotice.com/free-account/
+  note: Free personal breach check / free account signup surface. Not an API tier.
+api_access:
+  priced: false
+  gate: 'Not sold as a plan add-on on the pricing page. HackNotice''s help centre states: "We do
+    require a 30 min consultation call discussing our API documentation before API usage," and the
+    API documentation itself states access "is for approved accounts only".'
+  gate_source: https://hacknotice.zendesk.com/hc/en-us/articles/13540425661844-API

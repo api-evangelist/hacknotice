@@ -1,0 +1,38 @@
+generated: '2026-08-22'
+method: searched
+source: https://api-docs.hacknotice.com (HackNotice-API Postman collection, collection description)
+docs: https://api-docs.hacknotice.com
+limit_count: 1
+note: 'HackNotice publishes exactly one, unusually strict, global limit and states it in the
+  description of its own API documentation: "The HackNotice API has a governor on it that rate
+  limits queries to 1 query per second." That is the whole published limit surface — the docs
+  name no per-plan tiers, no burst allowance, no quota, and no rate-limit response headers, and
+  the response headers could not be observed because every production endpoint on
+  extensionapi.hacknotice.com returns 401 before routing to an anonymous caller. An integrating
+  agent must therefore self-throttle to 1 rps and treat any runtime rate-limit signal as
+  undocumented.'
+rate_limits:
+- scope: global-per-account
+  window: 1s
+  limit: 1
+  unit: requests
+  burst: null
+  quota: null
+  source: https://api-docs.hacknotice.com
+  evidence: 'Collection description: "The HackNotice API has a governor on it that rate limits queries to 1 query per second."'
+response_headers:
+  documented: false
+  observed: false
+  standard_headers: []
+  vendor_headers: []
+  retry_after: unknown
+  note: 'No X-RateLimit-*, RateLimit-* or Retry-After header is documented. Not observable
+    anonymously: https://extensionapi.hacknotice.com returns HTTP 401 {"message":"Unauthorized user!"}
+    on every path before any rate-limit accounting is exposed.'
+exhaustion_status: unknown
+mcp_surface:
+  endpoint: https://mcp.hacknotice.com:13330/mcp
+  documented_limit: null
+  note: 'The MCP server publishes no rate limit of its own. Because every tools/call is proxied to
+    the same extension API, the 1 rps governor should be assumed to apply transitively, but
+    HackNotice does not state this.'

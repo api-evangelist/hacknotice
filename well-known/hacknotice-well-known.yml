@@ -1,0 +1,65 @@
+generated: '2026-08-22'
+method: probed
+source: live GET probes, 2026-08-22
+note: 'NO HIT ON ANY HOST. Recorded as an honest absence, and deliberately NOT wired as a
+  common[].type WellKnown / SecurityTxt pointer — nothing here is served. Two distinct
+  negative shapes are present and worth telling apart: api.hacknotice.com returns a genuine
+  application/json 404 body {"message":"Not found"} for every /.well-known/* path, which is a
+  real, well-behaved absence from a live API host; app.hacknotice.com and api-docs.hacknotice.com
+  are SPA catch-alls that answer HTTP 200 with an HTML/text shell for every path including
+  obvious nonsense, so their 200s are NOT documents and must not be promoted to hits.'
+hit_count: 0
+hosts:
+- host: https://api.hacknotice.com
+  note: Live JSON API host; genuine 404 JSON body on every path.
+  documents:
+  - {path: /.well-known/security.txt, status: 404, file: null}
+  - {path: /.well-known/openid-configuration, status: 404, file: null}
+  - {path: /.well-known/oauth-authorization-server, status: 404, file: null}
+  - {path: /.well-known/oauth-protected-resource, status: 404, file: null}
+  - {path: /.well-known/api-catalog, status: 404, file: null}
+  - {path: /.well-known/ai-plugin.json, status: 404, file: null}
+  - {path: /.well-known/agent-card.json, status: 404, file: null}
+  - {path: /.well-known/agent.json, status: 404, file: null}
+- host: https://mcp.hacknotice.com:13330
+  note: MCP server host; Express "Cannot GET" 404 on every /.well-known path. No OAuth metadata.
+  documents:
+  - {path: /.well-known/oauth-authorization-server, status: 404, file: null}
+  - {path: /.well-known/oauth-protected-resource, status: 404, file: null}
+  - {path: /.well-known/agent-card.json, status: 404, file: null}
+  - {path: /.well-known/agent.json, status: 404, file: null}
+- host: https://extensionapi.hacknotice.com
+  note: Production REST base. Every path including /.well-known/* returns 401 {"message":"Unauthorized user!"} — the host authenticates before routing, so absence cannot be distinguished from gating here.
+  documents:
+  - {path: /.well-known/security.txt, status: 401, file: null}
+  - {path: /.well-known/openid-configuration, status: 401, file: null}
+  - {path: /.well-known/oauth-authorization-server, status: 401, file: null}
+  - {path: /.well-known/oauth-protected-resource, status: 401, file: null}
+  - {path: /.well-known/api-catalog, status: 401, file: null}
+  - {path: /.well-known/ai-plugin.json, status: 401, file: null}
+  - {path: /.well-known/agent-card.json, status: 401, file: null}
+  - {path: /.well-known/agent.json, status: 401, file: null}
+- host: https://hacknotice.com
+  note: WordPress marketing site behind a Cloudflare managed challenge. /.well-known/security.txt returns the site's real 176KB HTML 404 page, not a document.
+  documents:
+  - {path: /.well-known/security.txt, status: 404, file: null}
+  - {path: /llms.txt, status: 404, file: null}
+- host: https://app.hacknotice.com
+  note: SOFT-404 CATCH-ALL — do not promote. Answers HTTP 200 text/html with the 9-byte body "Not found" for every /.well-known/* path probed.
+  soft_404_control: {path: /.well-known/agent-card.json, status: 200, bytes: 9, body: Not found}
+  documents:
+  - {path: /.well-known/security.txt, status: 200, file: null, hit: false, reason: soft-404 catch-all}
+  - {path: /.well-known/openid-configuration, status: 200, file: null, hit: false, reason: soft-404 catch-all}
+  - {path: /.well-known/oauth-authorization-server, status: 200, file: null, hit: false, reason: soft-404 catch-all}
+  - {path: /.well-known/api-catalog, status: 200, file: null, hit: false, reason: soft-404 catch-all}
+  - {path: /.well-known/agent-card.json, status: 200, file: null, hit: false, reason: soft-404 catch-all}
+  - {path: /.well-known/agent.json, status: 200, file: null, hit: false, reason: soft-404 catch-all}
+- host: https://api-docs.hacknotice.com
+  note: SPA CATCH-ALL — 301s to the Postman documenter, which returns the identical 44,017-byte HTML shell for every path.
+  soft_404_control: {path: /.well-known/agent-card.json, status: 200, bytes: 44017, body: Postman documenter HTML shell}
+  documents:
+  - {path: /.well-known/security.txt, status: 200, file: null, hit: false, reason: SPA catch-all}
+  - {path: /.well-known/api-catalog, status: 200, file: null, hit: false, reason: SPA catch-all}
+  - {path: /.well-known/agent-card.json, status: 200, file: null, hit: false, reason: SPA catch-all}
+  - {path: /.well-known/agent.json, status: 200, file: null, hit: false, reason: SPA catch-all}
+  - {path: /llms.txt, status: 200, file: null, hit: false, reason: SPA catch-all}

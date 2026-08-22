@@ -1,0 +1,56 @@
+generated: '2026-08-22'
+method: searched
+source: https://registry.npmjs.org (metadata endpoints) + https://github.com/HackNotice
+note: 'HackNotice publishes no conventional REST client SDK in any language. What it does publish
+  is two first-party n8n community nodes, released from its own GitHub organization via GitHub
+  Actions and authored under nicolas@hacknotice.com with url https://hacknotice.com — one wrapping
+  the REST API, one acting as an MCP client for the hosted MCP server. Registries with no HackNotice
+  package at all: PyPI (404), RubyGems (404), crates.io (no crate), Maven Central, NuGet, pkg.go.dev.'
+packages:
+- language: javascript
+  registry: npm
+  name: n8n-nodes-hacknotice-api
+  url: https://www.npmjs.com/package/n8n-nodes-hacknotice-api
+  repository: https://github.com/HackNotice/n8n-nodes-hacknotice
+  install: npm install n8n-nodes-hacknotice-api
+  official: true
+  license: MIT
+  version: 3.0.4
+  published: '2026-06-05'
+  kind: workflow-node
+  covers: REST API — alerts, watchlists, saved searches, assessments, research, leak-file search
+  note: 'Fetch HackNotice alerts and saved searches from n8n workflows (REST API). Supports both
+    auth flows: apiKey + email + password, and X-HackNotice-Integration-Key. Declares the production
+    base URL https://extensionapi.hacknotice.com in credentials/HackNoticeApi.credentials.ts.'
+- language: javascript
+  registry: npm
+  name: n8n-nodes-hacknotice-mcp
+  url: https://www.npmjs.com/package/n8n-nodes-hacknotice-mcp
+  repository: https://github.com/HackNotice/n8n-nodes-hacknotice-mcp
+  install: npm install n8n-nodes-hacknotice-mcp
+  official: true
+  license: MIT
+  version: 1.0.6
+  published: '2026-07-07'
+  kind: mcp-client-node
+  covers: All hacknotice-mcp-server tools, discovered live via MCP tools/list
+  note: 'MCP client for n8n, not an MCP server: it POSTs JSON-RPC 2.0 over Streamable HTTP to the
+    fixed endpoint https://mcp.hacknotice.com:13330/mcp and exposes every discovered tool to an
+    n8n AI Agent. Deliberately avoids @modelcontextprotocol/sdk (ESM) and implements the client
+    half of the transport itself.'
+unpublished:
+- registry: npm
+  name: n8n-nodes-hacknotice
+  version: null
+  published: null
+  note: 'Reserved then UNPUBLISHED — registry.npmjs.org returns the package document with an
+    "unpublished" time key, no dist-tags and no description. Superseded by n8n-nodes-hacknotice-api.
+    Recorded so a consumer following an old reference knows why it resolves to nothing.'
+registries_checked:
+- {registry: npm, result: 2 first-party packages + 1 unpublished}
+- {registry: pypi, result: 404 for "hacknotice"}
+- {registry: rubygems, result: 404 for "hacknotice"}
+- {registry: crates.io, result: no crate}
+- {registry: maven-central, result: none}
+- {registry: nuget, result: none}
+- {registry: pkg.go.dev, result: none}

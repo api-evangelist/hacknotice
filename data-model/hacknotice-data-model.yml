@@ -1,0 +1,139 @@
+generated: '2026-08-22'
+method: derived
+source:
+- openapi/hacknotice-openapi.yml
+- mcp/hacknotice-mcp-tools.json
+note: 'Derived from the resource graph of the 249 operations in the derived OpenAPI and the 80 MCP
+  tool inputSchemas. HackNotice publishes no components.schemas — the Postman collection this was
+  built from carries request shapes but no reusable response models — so entities below are inferred
+  from route structure, path parameters and request-body fields, not from a declared schema. Field
+  lists are therefore indicative, and relationships are stated only where a route or an inputSchema
+  makes the link explicit.'
+id_convention:
+  format: 24-character lowercase hexadecimal (MongoDB ObjectId)
+  path_parameter_names: [documentId, assessmentId, eventId, templateId, inviteId, fileId, watchlistId, alertId, noteId, customerId]
+  prefixed_ids: false
+  note: 'Ids are untyped ObjectIds with no resource prefix, so an id alone does not tell an agent
+    which collection it belongs to — a meaningful contrast with prefixed-id APIs, and a real source
+    of cross-resource mistakes.'
+domains:
+- name: Identity & tenancy
+  entities: [customer, user, auth]
+- name: First-party monitoring
+  entities: [domainwatchlist, domainalerts, domainleaks, domainalertcalcs]
+- name: Third-party monitoring
+  entities: [hackwatchlist, hackalerts, hacks, hackalertcalcs, breaches, breachupdatedlog, breachcalcs]
+- name: End-user monitoring
+  entities: [enduserwatchlist, enduseralerts, enduserleaks, enduseralertcalcs]
+- name: Research
+  entities: [research, researchsavedsearch, leakfile, leakReportsv2, leakfilestats]
+- name: Vendor assessments
+  entities: [assessments, assessmentevents, assessmenttemplates, assessmentinvites, assessmentdatafiles, assessmentpreferences]
+- name: Cross-cutting
+  entities: [itemnotes, downloads, report, threatactorcalcs, hacknoticeupdates, utils]
+entities:
+- name: customer
+  description: The tenant. Every other object is scoped to a customer, and the customer_id is carried inside the JWT rather than passed as a parameter.
+  operations: 3
+  key: customerId
+- name: domainwatchlist
+  description: A first-party domain the customer owns and wants monitored.
+  operations: 6
+  key: watchlistId
+- name: domainalerts
+  description: An alert raised against a first-party domain. The single largest resource in the API.
+  operations: 19
+  key: alertId
+  sub_resources: [domainalertscreds, domainalertsleaks]
+- name: hackwatchlist
+  description: A third-party vendor the customer wants monitored.
+  operations: 9
+  key: watchlistId
+- name: hackalerts
+  description: An alert raised against a monitored third-party vendor.
+  operations: 17
+  key: alertId
+- name: enduserwatchlist
+  description: An end-user identity (typically a business email) under monitoring.
+  operations: 6
+  key: watchlistId
+- name: enduseralerts
+  description: An alert raised against a monitored end user.
+  operations: 14
+  key: alertId
+  sub_resources: [enduseralertscreds, enduseralertsleaks]
+- name: breaches
+  description: A breach/hack incident record in HackNotice's research database, independent of any one customer.
+  operations: 6
+- name: leakfile
+  description: A file recovered from a leak, searchable by filename, term and word pool.
+  operations: 3
+  key: documentId
+- name: leakReportsv2
+  description: Structured leak report record. The "v2" in the resource name is the API's only version signal.
+  operations: 3
+  key: documentId
+- name: researchsavedsearch
+  description: A stored research query, reusable as savedSearchJson / researchSavedSearchJson input to the alert tools.
+  operations: 8
+- name: assessments
+  description: A vendor security assessment, optionally AI-scored.
+  operations: 9
+  key: assessmentId
+- name: assessmenttemplates
+  description: A reusable questionnaire template; frameworks are enumerated by GET /assessmenttemplates/frameworks.
+  operations: 7
+  key: templateId
+- name: assessmentinvites
+  description: An invitation for a vendor to complete an assessment, activated by an invite code.
+  operations: 9
+  key: inviteId
+  alternate_key: inviteCode
+- name: assessmentevents
+  description: A lifecycle event on an assessment; has a parallel "invited" variant for the vendor side.
+  operations: 11
+  key: eventId
+- name: assessmentdatafiles
+  description: A document uploaded in support of an assessment; has a parallel "invited" variant.
+  operations: 12
+  key: fileId
+- name: assessmentpreferences
+  description: Per-customer assessment configuration. A singleton — no id in the path.
+  operations: 4
+  cardinality: singleton
+- name: itemnotes
+  description: Free-text analyst notes attachable to alerts and other items. Cross-cutting.
+  operations: 12
+  key: noteId
+relationships:
+- {from: customer, to: domainwatchlist, type: has_many, via: JWT customer_id scope}
+- {from: customer, to: hackwatchlist, type: has_many, via: JWT customer_id scope}
+- {from: customer, to: enduserwatchlist, type: has_many, via: JWT customer_id scope}
+- {from: customer, to: assessmentpreferences, type: has_one, via: JWT customer_id scope}
+- {from: domainwatchlist, to: domainalerts, type: has_many, via: watchlist domain match}
+- {from: hackwatchlist, to: hackalerts, type: has_many, via: watchlist vendor match}
+- {from: enduserwatchlist, to: enduseralerts, type: has_many, via: watchlist identity match}
+- {from: domainalerts, to: domainalertscreds, type: has_many, via: sub-resource route}
+- {from: domainalerts, to: domainalertsleaks, type: has_many, via: sub-resource route}
+- {from: enduseralerts, to: enduseralertscreds, type: has_many, via: sub-resource route}
+- {from: enduseralerts, to: enduseralertsleaks, type: has_many, via: sub-resource route}
+- {from: hackalerts, to: breaches, type: belongs_to, via: underlying breach incident}
+- {from: breaches, to: breachupdatedlog, type: has_many, via: update log route}
+- {from: assessments, to: assessmenttemplates, type: belongs_to, via: template reference}
+- {from: assessments, to: assessmentevents, type: has_many, via: /assessmentevents scoped to assessment}
+- {from: assessments, to: assessmentdatafiles, type: has_many, via: /assessmentdatafiles scoped to assessment}
+- {from: assessmentinvites, to: assessments, type: has_one, via: activation by inviteCode}
+- {from: assessmentinvites, to: assessmentevents, type: has_many, via: /assessmentevents/invited}
+- {from: assessmentinvites, to: assessmentdatafiles, type: has_many, via: /assessmentdatafiles/invited}
+- {from: hackwatchlist, to: assessments, type: has_many, via: 'vendor assessment linkage — hacknotice_assessment_vendors_without_assessment returns watchlist vendors with no assessment'}
+- {from: researchsavedsearch, to: research, type: has_many, via: savedSearchJson replayed against research search}
+- {from: itemnotes, to: domainalerts, type: belongs_to, via: '/itemnotes/customer/{customerId} note attachment'}
+calculation_resources:
+  note: 'A distinct family of rollup resources — breachcalcs, threatactorcalcs, domainalertcalcs,
+    hackalertcalcs, enduseralertcalcs — that return aggregates rather than entities. They are the
+    backing surface for the platform dashboards (Attack Heatmap, Adversary Attack Matrix, Ransomware,
+    Global Breaches, Third Party) and have no MCP tool equivalent.'
+  resources: [breachcalcs, threatactorcalcs, domainalertcalcs, hackalertcalcs, enduseralertcalcs]
+deprecated_entities:
+  resources: [darkhashalerts, teams]
+  note: Grouped under a "Deprecated" folder in HackNotice's own published collection.

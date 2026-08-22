@@ -1,0 +1,58 @@
+generated: '2026-08-22'
+method: searched
+source:
+- https://api-docs.hacknotice.com
+- openapi/hacknotice-openapi.yml
+- probes of status./trust. subdomains, 2026-08-22
+versioning:
+  scheme: none
+  current: null
+  docs: null
+  note: 'No version is expressed in the path, in a header, or by date. Versioning is visible only as
+    resource-name drift — /leakreportsv2 alongside older leak resources — which means a breaking
+    change to an existing route would be invisible to a client until it broke.'
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  note: 'No deprecation policy, no RFC 8594 Sunset or Deprecation header support documented. What
+    HackNotice does publish is a folder literally named "Deprecated" in its own API collection,
+    containing dark-hash-alert and Teams-account endpoints. That is a deprecation SIGNAL without a
+    deprecation POLICY: consumers are told which endpoints are on the way out but not when they will
+    stop working, or what replaces them. Deliberately NOT wired as a common[].type Deprecation
+    pointer — there is no policy page for the pointer to point at.'
+  deprecated_operation_count: 13
+  deprecated_areas: [Dark hash alerts, Teams Accounts]
+  deprecated_marked_in: 'openapi/hacknotice-openapi.yml — deprecated: true on every operation tagged "Deprecated"'
+status_page:
+  url: null
+  published: false
+  probes:
+  - {url: 'https://status.hacknotice.com/', status: 0, result: DNS does not resolve}
+  - {url: 'https://trust.hacknotice.com/', status: 0, result: DNS does not resolve}
+  - {url: 'https://security.hacknotice.com/', status: 0, result: DNS does not resolve}
+  - {url: 'https://hacknotice.com/status', status: 403, result: Cloudflare challenge; no indexed status page exists}
+  note: 'No status page found on any conventional host. Deliberately NOT wired as a common[].type StatusPage pointer.'
+sla:
+  url: null
+  uptime_target: null
+  note: 'No public SLA. Uptime commitments, if any, live in the Business Terms and Conditions and are not published as a number.'
+changelog:
+  api_changelog: null
+  note: 'HackNotice publishes no API changelog. The only dated release history for anything
+    HackNotice ships is the CHANGELOG.md in each first-party n8n node repository, which tracks the
+    node package rather than the API. Not wired as a ChangeLog pointer, because a package changelog
+    is not an API changelog.'
+  package_changelogs:
+  - https://github.com/HackNotice/n8n-nodes-hacknotice/blob/main/CHANGELOG.md
+  - https://github.com/HackNotice/n8n-nodes-hacknotice-mcp/blob/main/CHANGELOG.md
+support:
+  help_center: https://hacknotice.zendesk.com/hc/en-us
+  email: support@hacknotice.com
+  api_onboarding: 'HackNotice requires a 30-minute consultation call before API usage — https://hacknotice.zendesk.com/hc/en-us/articles/13540425661844-API'
+terms:
+  general: https://hacknotice.com/tandc/
+  business: https://hacknotice.com/businesstandc/
+  use_policy: https://hacknotice.com/use-policy/
+  privacy: https://hacknotice.com/privacy/

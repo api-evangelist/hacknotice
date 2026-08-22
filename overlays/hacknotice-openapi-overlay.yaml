@@ -1,0 +1,31 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for HackNotice API
+  version: 1.0.0
+extends: openapi/hacknotice-openapi.yml
+x-generated: '2026-08-22'
+x-method: generated
+x-source: 'API Evangelist enrichment pass, 2026-08-22. Captures the annotations API Evangelist adds
+  on top of the contract derived from HackNotice''s published Postman collection, so the derived
+  base document stays a faithful transcription and every judgement lives here instead.'
+actions:
+- target: $.info
+  update:
+    x-apievangelist-contract-origin: 'Derived from the HackNotice-API Postman collection published at https://api-docs.hacknotice.com. HackNotice publishes no OpenAPI of its own.'
+    x-apievangelist-access-gate: 'API access requires an approved account and a 30-minute consultation call with HackNotice before use.'
+    x-apievangelist-agent-surfaces: 'A live MCP server at https://mcp.hacknotice.com:13330/mcp exposes 80 tools whose catalogue and input schemas are readable anonymously. 54 of them bind to operations in this document; see mcp/hacknotice-tool-crosswalk.yml.'
+- target: $.info
+  update:
+    x-rate-limit: 1 request per second, global, published by HackNotice in its collection description.
+    x-error-format: 'vendor-json {"message": "..."} — not RFC 9457.'
+    x-idempotency: none published
+    x-reversibility: 'none published — no cancel, undo or restore route exists for any of the destructive operations in this document.'
+- target: $.components.securitySchemes.jwtAuth
+  update:
+    x-apievangelist-note: 'Non-standard: the literal prefix is "JWT ", not "Bearer ". A generic OAuth/Bearer client will fail against this API.'
+- target: $.tags[?(@.name=='Deprecated')]
+  update:
+    x-apievangelist-note: 'HackNotice groups these operations as deprecated in its own collection but publishes no deprecation policy, no sunset date and no replacement guidance. Every operation under this tag carries deprecated: true in the derived document.'
+- target: $.servers[0]
+  update:
+    x-apievangelist-note: 'The published collection ships an internal {{url}} variable pointing at a developer VPN host (vpn-dev-*.hacknotice.com:13443), which is NOT the production base. The production host recorded here is the one HackNotice declares in its own first-party n8n credential source.'

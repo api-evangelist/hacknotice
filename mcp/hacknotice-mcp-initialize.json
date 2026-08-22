@@ -1,0 +1,13 @@
+{
+  "protocolVersion": "2024-11-05",
+  "capabilities": {
+    "tools": {
+      "listChanged": true
+    }
+  },
+  "serverInfo": {
+    "name": "hacknotice",
+    "version": "0.1.0"
+  },
+  "instructions": "Use hacknotice_verify_credentials to confirm configuration. For ransomware attacks, data breaches, or \"what happened to {company/domain}\" questions, use search_global_breaches first \u2014 it returns breach details, recommendations.workflowActions (assessment/watchlist). When listing or counting assessments for a named vendor/company, ALWAYS pass term on hacknotice_assessment_list_assessments_page and hacknotice_assessment_count_assessments (e.g. term: \"discover\") \u2014 never fetch all assessments without a filter when the user named a vendor. Use hacknotice_list_saved_searches to discover saved-search payloads, then pass the JSON into the alert tools as savedSearchJson or researchSavedSearchJson. Time: timeRange (lastDay | lastWeek | lastMonth), or fixed startDate/endDate (ISO 8601), or hoursAgo/time_range_hours for 8\u201372 hour rolling windows only (values under 8 are treated as 8; over 72 requires a date range). Debug: when the user prompt contains [debug], pass debug: true on every HackNotice tool call in that turn \u2014 the tool response will include _debug with inbound MCP and outbound extension API request/response traces (secrets redacted)."
+}

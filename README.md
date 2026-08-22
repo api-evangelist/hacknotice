@@ -64,5 +64,50 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-HackNotice is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.nasdaqprivatemarket.com/
+HackNotice is an external threat-intelligence and cyber-risk platform founded in 2018 and
+headquartered in Austin, Texas. It continuously collects intelligence from ransomware groups,
+infostealer malware logs, data breaches, dark-web marketplaces, hacker forums and public
+disclosures, then matches that intelligence against the domains, employees, customers and vendors an
+organization asks it to watch. The product is organized around first-party domain monitoring,
+third-party vendor risk monitoring, end-user credential monitoring and threat research, plus
+AI-assisted vendor security assessments.
+
+## Public API surface
+
+| Surface | Where |
+|---|---|
+| REST API base | `https://extensionapi.hacknotice.com` |
+| API documentation | https://api-docs.hacknotice.com (a Postman collection, 262 requests) |
+| MCP server (remote, Streamable HTTP) | `https://mcp.hacknotice.com:13330/mcp` — 80 tools |
+| Help centre | https://hacknotice.zendesk.com/hc/en-us |
+| GitHub organization | https://github.com/HackNotice |
+
+HackNotice publishes **no OpenAPI**. `openapi/hacknotice-openapi.yml` in this repository is an API
+Evangelist derivation of HackNotice's own published Postman collection — 202 paths, 246 operations —
+not a provider artifact. Its provenance is recorded in `info.description` and in
+`overlays/hacknotice-openapi-overlay.yaml`.
+
+HackNotice's MCP server answers `initialize` and `tools/list` **anonymously**, so its full tool
+catalogue and every JSON Schema `inputSchema` are public; `tools/call` is gated on a per-user
+`X-HackNotice-Integration-Key`. The verbatim tool manifest is saved at
+`mcp/hacknotice-mcp-tools.json`, and `mcp/hacknotice-tool-crosswalk.yml` binds 54 of the 80 tools to
+the REST operations they declare as their backing routes.
+
+REST API access itself is granted to approved accounts only, after a 30-minute consultation call.
+
+## Measured gaps
+
+No `/.well-known` document on any host, no `security.txt`, no OAuth/OIDC metadata, no A2A agent card,
+no status page, no SLA, no API changelog, no deprecation policy (though a `Deprecated` folder exists
+in the published collection), no idempotency contract, no reversal operation or window for any
+destructive operation, no published compliance program or trust centre, errors that are a flat
+`{"message": "..."}` rather than RFC 9457, and no STIX/TAXII/MISP/OpenC2/CVE interchange in a
+threat-intelligence contract.
+
+## Links
+
+- Website: https://hacknotice.com/
+- Pricing: https://hacknotice.com/pricing/
+- Blog: https://hacknotice.com/category/blog/ (RSS https://hacknotice.com/feed/)
+- Terms: https://hacknotice.com/businesstandc/ · Privacy: https://hacknotice.com/privacy/
+- Support: support@hacknotice.com

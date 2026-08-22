@@ -1,0 +1,29 @@
+generated: '2026-08-22'
+method: generated
+source: openapi/hacknotice-openapi.yml + mcp/hacknotice-mcp-tools.json + https://api-docs.hacknotice.com
+note: 'Every operationId in these skills was grepped out of openapi/hacknotice-openapi.yml and every
+  MCP tool name out of the live mcp/hacknotice-mcp-tools.json. None were invented. HackNotice
+  publishes no skills or AGENTS.md of its own on hacknotice.com or in its GitHub organization — the
+  AGENTS.md and CLAUDE.md in HackNotice/n8n-nodes-hacknotice are n8n node-authoring guides for its own
+  developers, not consumer-facing agent skills, so they are not mirrored here.'
+skills:
+- file: hacknotice-authenticate-and-call.md
+  name: Authenticate against the HackNotice API
+  api: openapi/hacknotice-openapi.yml
+  operations: [postSignIn, post2FaSignIn, getSignOut, getSignOutAllSessions]
+- file: hacknotice-monitor-third-party-vendors.md
+  name: Monitor third-party vendors for breaches
+  api: openapi/hacknotice-openapi.yml
+  operations: [postCreateADoc3, postSearchForADomain, getReadAPageOfDocuments6, postReadThirdPartyAlertsPage, getReadCountForAlerts, putFixHackalertsForAListOfAlertIds, deleteADoc4]
+- file: hacknotice-monitor-first-party-and-end-users.md
+  name: Monitor first-party domains and end-user credentials
+  api: openapi/hacknotice-openapi.yml
+  operations: [getReadDocuments, postReadFirstPartyAlertsPage, getReadAlertsLastDate, postCreateADoc6, postReadEndUserAlertsPage, deleteADoc8]
+- file: hacknotice-run-vendor-assessment.md
+  name: Run an AI-scored vendor security assessment
+  api: openapi/hacknotice-openapi.yml
+  operations: [getListAvailableFrameworks, postCreateTemplate, postCreateADoc4, postCreateInvite, postActivateInvite, postProjection, deleteADoc5]
+- file: hacknotice-research-breaches-and-leaks.md
+  name: Research breaches, leaks and threat-actor chatter
+  api: openapi/hacknotice-openapi.yml
+  operations: [postCountSearchTerm, postSearchTermAndPage, postSearchAll2, postGetByFilename, getReadADocument2]

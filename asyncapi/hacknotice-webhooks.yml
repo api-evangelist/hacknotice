@@ -1,0 +1,68 @@
+generated: '2026-08-22'
+method: searched
+source:
+- https://hacknotice.zendesk.com/hc/en-us/articles/50543401636628-Optional-Webhook-Notifications
+- https://hacknotice.zendesk.com/hc/en-us/articles/21910701867412-Slack-Integration-SlackBot-Webhook-Setup
+- https://hacknotice.zendesk.com/hc/en-us/articles/21910117060628-Splunk-Integration
+spec_type: none
+asyncapi_published: false
+note: 'HackNotice publishes NO AsyncAPI document. It does document a real, if deliberately minimal,
+  outbound event surface: batched webhook notifications for each of its three monitoring services,
+  a Slack incoming-webhook destination, and a Splunk HTTP Event Collector destination. Captured here
+  as a webhook catalogue and wired as common[].type Webhooks. The payload contract is intentionally
+  thin by design, which is the most important fact about it for an integrator.'
+delivery:
+  model: outbound-webhook
+  cadence: 'Batch, evaluated every 12 hours. A notification is sent only when new alerts have been added to a service timeline since the previous run.'
+  real_time: false
+  configuration: 'Configured in-app under Business > Account > Account. Not configurable through the REST API — no webhook-subscription resource appears in the published collection.'
+  licensing: 'Webhook notifications are generated only for services included in the subscription. An unlicensed service emits nothing.'
+channels:
+- name: third-party-monitoring-alerts
+  service: Third Party Monitoring
+  trigger: New alerts added to the third-party vendor watchlist timeline in the last 12 hours
+  payload_fields: [alert_count, platform_link]
+  example_link: https://app.hacknotice.com/#/thirdparty/watchlist
+- name: first-party-monitoring-alerts
+  service: First Party Monitoring
+  trigger: New alerts added to the first-party domain timeline in the last 12 hours
+  payload_fields: [alert_count, platform_link]
+- name: end-user-monitoring-alerts
+  service: End User Monitoring
+  trigger: New alerts added to the end-user timeline in the last 12 hours
+  payload_fields: [alert_count, platform_link]
+  example_body: 'End Users have 211 new alerts.'
+payload_contract:
+  included: [Number of new alerts, Direct link to the corresponding service in the HackNotice platform]
+  excluded: [Usernames, Domains, Breach details, Passwords, Threat context, Any other sensitive information]
+  rationale: 'Deliberate security design — alert detail stays behind the platform login. HackNotice states plainly that webhooks "intentionally contain only summary information".'
+  integrator_consequence: 'A webhook is a doorbell, not a message. Any agent or SIEM pipeline must call the REST API or the MCP server after receiving one in order to learn what actually happened.'
+  schema_published: false
+  signing: not documented
+  retries: not documented
+destinations:
+- name: Slack
+  kind: incoming-webhook
+  setup: 'Create a Slack app, enable Incoming Webhooks, then paste the hooks.slack.com URL into the SlackBot Webhook field under Business > Account > Account in app.hacknotice.com.'
+  docs: https://hacknotice.zendesk.com/hc/en-us/articles/21910701867412-Slack-Integration-SlackBot-Webhook-Setup
+- name: Splunk Cloud
+  kind: http-event-collector
+  setup: 'Create an HEC token in Splunk Cloud, then paste the token and the HEC URL into the Splunk HEC Token / Splunk HEC URL fields under Business > Account > Account. Splunk On-Prem is handled by a HackNotice representative.'
+  docs: https://hacknotice.zendesk.com/hc/en-us/articles/21910117060628-Splunk-Integration
+- name: Ticketing systems
+  kind: email-alert-address
+  setup: 'ServiceNow, Jira and other platforms are integrated by configuring a ticketing-system alert email address rather than a webhook.'
+  docs: https://hacknotice.zendesk.com/hc/en-us/articles/21910176213012-Configuring-a-Ticketing-System-Alert-Address-ServiceNow-Jira-or-Other-Platforms
+customization:
+  available: true
+  self_service: false
+  note: 'HackNotice states that faster frequencies, real-time delivery, additional payload metadata,
+    alert summaries, custom formats and SIEM/SOAR integrations are all available — but only by
+    contacting an account representative. None of it is self-service and none of it is documented as
+    a contract, so the 12-hour count-only webhook is the only shape a consumer can rely on.'
+gaps:
+- No AsyncAPI document.
+- No published JSON schema for the webhook payload.
+- No signature/HMAC verification documented — a receiver cannot authenticate the sender.
+- No retry or delivery-guarantee statement.
+- No API-managed webhook subscription resource; endpoints are set in the UI only.

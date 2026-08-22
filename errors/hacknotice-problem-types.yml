@@ -1,0 +1,56 @@
+generated: '2026-08-22'
+method: derived
+source:
+- openapi/hacknotice-openapi.yml
+- live probes of https://extensionapi.hacknotice.com and https://api.hacknotice.com
+- https://api-docs.hacknotice.com
+format: vendor-json
+rfc9457: false
+envelope:
+  shape: '{"message": "<human readable text>"}'
+  members: [message]
+  note: 'HackNotice returns a flat JSON object with a single free-text `message` member. There is no
+    machine-readable error identity — no type URI, no numeric or symbolic code, no title, no detail,
+    no instance — so a client cannot branch on error kind without string-matching English prose.
+    HackNotice publishes no error reference page; the entries below are the statuses actually
+    observed on live hosts plus the statuses the derived OpenAPI declares.'
+problems:
+- status: 401
+  title: Unauthorized user
+  observed_body: '{"message":"Unauthorized user!"}'
+  observed_at: https://extensionapi.hacknotice.com
+  http_status: 401
+  cause: 'Missing or invalid Authorization: JWT header, missing apikey header, or an unrecognised X-HackNotice-Integration-Key.'
+  remediation: 'Re-run POST /auth/sign_in to mint a fresh JWT, or send X-HackNotice-Integration-Key. Note the production host returns this for EVERY path including /.well-known/*, so a 401 does not imply the path exists.'
+  method: probed
+- status: 404
+  title: Not found
+  observed_body: '{"message":"Not found"}'
+  observed_at: https://api.hacknotice.com
+  http_status: 404
+  cause: Unknown route or unknown document id.
+  remediation: Verify the resource path and the 24-character document id.
+  method: probed
+- status: 403
+  title: Bot challenge (edge, not API)
+  observed_body: Cloudflare managed-challenge HTML ("Just a moment...")
+  observed_at: https://hacknotice.com, https://api.hacknotice.com, https://app.hacknotice.com
+  http_status: 403
+  cause: 'Cloudflare managed challenge fired on a non-browser client. This is an EDGE response, not an API error — the body is HTML, not the JSON envelope.'
+  remediation: 'Not remediable by an API client. Machine consumers should call extensionapi.hacknotice.com (which is not challenged) rather than api.hacknotice.com.'
+  method: probed
+  note: 'Important operational distinction: api.hacknotice.com sits behind the challenge, while the production base extensionapi.hacknotice.com does not.'
+- status: 400
+  title: Bad request
+  cause: 'Most commonly a missing Content-Type header. HackNotice explicitly warns that its own Postman samples omit it and that it is required.'
+  remediation: 'Send Content-Type: application/x-www-form-urlencoded (or application/json where the operation takes a JSON body).'
+  method: derived
+  source_note: HackNotice-API collection description
+mcp_errors:
+  transport: JSON-RPC 2.0 over Streamable HTTP
+  envelope: 'JSON-RPC error object {code, message, data?}; tool-level failures also surface as a tools/call result with isError: true.'
+  note: 'The MCP surface has a better-specified error contract than the REST surface, because JSON-RPC supplies the numeric code the REST envelope lacks.'
+gaps:
+- 'No published error reference page anywhere on hacknotice.com or in the Zendesk help centre.'
+- 'No error codes, so no stable identifiers to catalogue.'
+- 'Response examples for 4xx/5xx are absent from the published Postman collection, so the derived OpenAPI carries a synthetic 401 declaration rather than harvested examples.'

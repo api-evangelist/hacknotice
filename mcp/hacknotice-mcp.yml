@@ -1,0 +1,996 @@
+generated: '2026-08-22'
+method: probed
+source: https://mcp.hacknotice.com:13330/mcp (JSON-RPC tools/list, HTTP 200, anonymous)
+status: published
+deployment:
+  mode: both
+  endpoint: https://mcp.hacknotice.com:13330/mcp
+  install: npm install n8n-nodes-hacknotice-mcp
+  package: https://www.npmjs.com/package/n8n-nodes-hacknotice-mcp
+  auth: api-key
+  verified: probed
+  note: 'Remote Streamable-HTTP MCP server operated by HackNotice, plus a first-party n8n community node that speaks
+    to that same fixed endpoint (HACKNOTICE_MCP_ENDPOINT_URL in github.com/HackNotice/n8n-nodes-hacknotice-mcp).
+    The npm package is an MCP CLIENT for n8n, not a second server: mode is "both" because HackNotice ships a callable
+    URL and an installable package, and the URL is the agent surface.'
+server:
+  name: hacknotice
+  version: 0.1.0
+  transport: streamable-http
+  protocol_version: '2024-11-05'
+  url: https://mcp.hacknotice.com:13330/mcp
+  capabilities:
+    tools:
+      listChanged: true
+  instructions: 'Use hacknotice_verify_credentials to confirm configuration. For ransomware attacks, data breaches,
+    or "what happened to {company/domain}" questions, use search_global_breaches first — it returns breach details,
+    recommendations.workflowActions (assessment/watchlist). When listing or counting assessments for a named vendor/company,
+    ALWAYS pass term on hacknotice_assessment_list_assessments_page and hacknotice_assessment_count_assessments
+    (e.g. term: "discover") — never fetch all assessments without a filter when the user named a vendor. Use hacknotice_list_saved_searches
+    to discover saved-search payloads, then pass the JSON into the alert tools as savedSearchJson or researchSavedSearchJson.
+    Time: timeRange (lastDay | lastWeek | lastMonth), or fixed startDate/endDate (ISO 8601), or hoursAgo/time_range_hours
+    for 8–72 hour rolling windows only (values under 8 are treated as 8; over 72 requires a date range). Debug:
+    when the user prompt contains [debug], pass debug: true on every HackNotice tool call in that turn — the tool
+    response will include _debug with inbound MCP and outbound extension API request/response traces (secrets redacted).'
+authentication:
+  scheme: api-key
+  header: X-HackNotice-Integration-Key
+  key_prefix: hn_ik_
+  note: tools/list and initialize answer ANONYMOUSLY (HTTP 200) — the tool catalogue and every inputSchema are public.
+    The integration key is validated per tools/call against the HackNotice extension API, so discovery is open while
+    execution is gated. /.well-known/oauth-authorization-server and /.well-known/oauth-protected-resource both 404
+    on this host; there is no OAuth metadata.
+tool_count: 80
+summary:
+  by_group:
+    assessments: 49
+    assessments-invited: 6
+    third-party: 5
+    first-party: 4
+    end-user: 6
+    general: 8
+    research: 2
+  read_only_tools: 38
+  write_tools: 38
+  tools_declaring_backing_rest: 57
+tools_file: hacknotice-mcp-tools.json
+initialize_file: hacknotice-mcp-initialize.json
+tools:
+- name: hacknotice_assessment_get_assessment_invite
+  title: Get Assessment Invite
+  group: assessments
+  read_only: true
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: GET /assessments/invited/:docId
+- name: hacknotice_assessment_update_assessment_invite
+  title: Update Assessment Invite
+  group: assessments
+  read_only: false
+  required_inputs:
+  - documentId
+  - requestBody
+  input_properties:
+  - debug
+  - documentId
+  - requestBody
+  backing_rest: PUT /assessments/invited/:docId
+- name: hacknotice_assessment_list_assessments_page
+  title: List Assessments (Page)
+  group: assessments
+  read_only: false
+  required_inputs: []
+  input_properties:
+  - companyId
+  - debug
+  - pageNumber
+  - requestBody
+  - scoreExists
+  - scoreGreaterThanOrEqual
+  - scoreLessThanOrEqual
+  - sortBy
+  - sortOrder
+  - status
+  - term
+  backing_rest: POST /assessments/page/:pageNum
+- name: hacknotice_assessment_count_assessments
+  title: Count Assessments
+  group: assessments
+  read_only: false
+  required_inputs: []
+  input_properties:
+  - companyId
+  - debug
+  - requestBody
+  - scoreExists
+  - scoreGreaterThanOrEqual
+  - scoreLessThanOrEqual
+  - sortBy
+  - sortOrder
+  - status
+  - term
+  backing_rest: POST /assessments/count
+- name: hacknotice_assessment_get_assessment
+  title: Get Assessment
+  group: assessments
+  read_only: true
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: GET /assessments/:docId
+- name: hacknotice_assessment_projection_assessments
+  title: Projection Assessments
+  group: assessments
+  read_only: false
+  required_inputs: []
+  input_properties:
+  - debug
+  - requestBody
+  backing_rest: POST /assessments/projection
+- name: hacknotice_assessment_delete_assessment
+  title: Delete Assessment
+  group: assessments
+  read_only: false
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: DELETE /assessments/:docId
+- name: hacknotice_assessment_update_assessment
+  title: Update Assessment
+  group: assessments
+  read_only: false
+  required_inputs:
+  - documentId
+  - requestBody
+  input_properties:
+  - debug
+  - documentId
+  - requestBody
+  backing_rest: PUT /assessments/:docId
+- name: hacknotice_assessment_ai_score_assessment
+  title: AI Score Assessment
+  group: assessments
+  read_only: false
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: POST /assessments/ai-score/:docId
+- name: hacknotice_assessment_event_invited_list_events_page
+  title: Invited - List Events (Page)
+  group: assessments
+  read_only: false
+  required_inputs:
+  - requestBody
+  input_properties:
+  - debug
+  - pageNumber
+  - requestBody
+  backing_rest: POST /assessmentevents/invited/page/:pageNum
+- name: hacknotice_assessment_event_invited_create_event
+  title: Invited - Create Event
+  group: assessments
+  read_only: false
+  required_inputs:
+  - requestBody
+  input_properties:
+  - debug
+  - requestBody
+  backing_rest: POST /assessmentevents/invited
+- name: hacknotice_assessment_event_invited_get_event
+  title: Invited - Get Event
+  group: assessments
+  read_only: true
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: GET /assessmentevents/invited/:docId
+- name: hacknotice_assessment_event_invited_delete_event
+  title: Invited - Delete Event
+  group: assessments
+  read_only: false
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: DELETE /assessmentevents/invited/:docId
+- name: hacknotice_assessment_event_invited_update_event
+  title: Invited - Update Event
+  group: assessments
+  read_only: false
+  required_inputs:
+  - documentId
+  - requestBody
+  input_properties:
+  - debug
+  - documentId
+  - requestBody
+  backing_rest: PUT /assessmentevents/invited/:docId
+- name: hacknotice_assessment_event_list_events_page
+  title: List Events (Page)
+  group: assessments
+  read_only: false
+  required_inputs: []
+  input_properties:
+  - debug
+  - pageNumber
+  - requestBody
+  backing_rest: POST /assessmentevents/page/:pageNum
+- name: hacknotice_assessment_event_count_events
+  title: Count Events
+  group: assessments
+  read_only: false
+  required_inputs: []
+  input_properties:
+  - debug
+  - requestBody
+  backing_rest: POST /assessmentevents/count
+- name: hacknotice_assessment_event_create_event
+  title: Create Event
+  group: assessments
+  read_only: false
+  required_inputs:
+  - requestBody
+  input_properties:
+  - debug
+  - requestBody
+  backing_rest: POST /assessmentevents
+- name: hacknotice_assessment_event_get_event
+  title: Get Event
+  group: assessments
+  read_only: true
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: GET /assessmentevents/:docId
+- name: hacknotice_assessment_event_delete_event
+  title: Delete Event
+  group: assessments
+  read_only: false
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: DELETE /assessmentevents/:docId
+- name: hacknotice_assessment_event_update_event
+  title: Update Event
+  group: assessments
+  read_only: false
+  required_inputs:
+  - documentId
+  - requestBody
+  input_properties:
+  - debug
+  - documentId
+  - requestBody
+  backing_rest: PUT /assessmentevents/:docId
+- name: hacknotice_assessment_template_list_templates_page
+  title: List Templates (Page)
+  group: assessments
+  read_only: false
+  required_inputs: []
+  input_properties:
+  - debug
+  - pageNumber
+  - requestBody
+  backing_rest: POST /assessmenttemplates/page/:pageNum
+- name: hacknotice_assessment_template_list_template_frameworks
+  title: List Template Frameworks
+  group: assessments
+  read_only: true
+  required_inputs: []
+  input_properties:
+  - debug
+  backing_rest: GET /assessmenttemplates/frameworks
+- name: hacknotice_assessment_template_count_templates
+  title: Count Templates
+  group: assessments
+  read_only: false
+  required_inputs: []
+  input_properties:
+  - debug
+  - requestBody
+  backing_rest: POST /assessmenttemplates/count
+- name: hacknotice_assessment_template_create_template
+  title: Create Template
+  group: assessments
+  read_only: false
+  required_inputs:
+  - requestBody
+  input_properties:
+  - debug
+  - requestBody
+  backing_rest: POST /assessmenttemplates
+- name: hacknotice_assessment_template_get_template
+  title: Get Template
+  group: assessments
+  read_only: true
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: GET /assessmenttemplates/:docId
+- name: hacknotice_assessment_template_delete_template
+  title: Delete Template
+  group: assessments
+  read_only: false
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: DELETE /assessmenttemplates/:docId
+- name: hacknotice_assessment_template_update_template
+  title: Update Template
+  group: assessments
+  read_only: false
+  required_inputs:
+  - documentId
+  - requestBody
+  input_properties:
+  - debug
+  - documentId
+  - requestBody
+  backing_rest: PUT /assessmenttemplates/:docId
+- name: hacknotice_assessment_preference_create_preferences
+  title: Create Preferences
+  group: assessments
+  read_only: false
+  required_inputs:
+  - requestBody
+  input_properties:
+  - debug
+  - requestBody
+  backing_rest: POST /assessmentpreferences
+- name: hacknotice_assessment_preference_get_preferences
+  title: Get Preferences
+  group: assessments
+  read_only: true
+  required_inputs: []
+  input_properties:
+  - debug
+  backing_rest: GET /assessmentpreferences
+- name: hacknotice_assessment_preference_delete_preferences
+  title: Delete Preferences
+  group: assessments
+  read_only: false
+  required_inputs: []
+  input_properties:
+  - debug
+  backing_rest: DELETE /assessmentpreferences
+- name: hacknotice_assessment_preference_update_preferences
+  title: Update Preferences
+  group: assessments
+  read_only: false
+  required_inputs:
+  - requestBody
+  input_properties:
+  - debug
+  - requestBody
+  backing_rest: PUT /assessmentpreferences
+- name: hacknotice_assessment_invite_list_invites_page
+  title: List Invites (Page)
+  group: assessments
+  read_only: false
+  required_inputs: []
+  input_properties:
+  - debug
+  - pageNumber
+  - requestBody
+  backing_rest: POST /assessmentinvites/page/:pageNum
+- name: hacknotice_assessment_invite_count_invites
+  title: Count Invites
+  group: assessments
+  read_only: false
+  required_inputs: []
+  input_properties:
+  - debug
+  - requestBody
+  backing_rest: POST /assessmentinvites/count
+- name: hacknotice_assessment_invite_create_invite
+  title: Create Invite
+  group: assessments
+  read_only: false
+  required_inputs:
+  - requestBody
+  input_properties:
+  - debug
+  - requestBody
+  backing_rest: POST /assessmentinvites
+- name: hacknotice_assessment_invite_get_invite
+  title: Get Invite
+  group: assessments
+  read_only: true
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: GET /assessmentinvites/:docId
+- name: hacknotice_assessment_invite_list_my_invites
+  title: List My Invites
+  group: assessments
+  read_only: true
+  required_inputs: []
+  input_properties:
+  - debug
+  backing_rest: GET /assessmentinvites/mine
+- name: hacknotice_assessment_invite_get_invite_by_code
+  title: Get Invite by Code
+  group: assessments
+  read_only: true
+  required_inputs:
+  - inviteCode
+  input_properties:
+  - debug
+  - inviteCode
+  backing_rest: GET /assessmentinvites/code/:inviteCode
+- name: hacknotice_assessment_invite_activate_invite
+  title: Activate Invite
+  group: assessments
+  read_only: false
+  required_inputs:
+  - inviteCode
+  input_properties:
+  - debug
+  - inviteCode
+  backing_rest: POST /assessmentinvites/activate/:inviteCode
+- name: hacknotice_assessment_invite_delete_invite
+  title: Delete Invite
+  group: assessments
+  read_only: false
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: DELETE /assessmentinvites/:docId
+- name: hacknotice_assessment_invite_update_invite
+  title: Update Invite
+  group: assessments
+  read_only: false
+  required_inputs:
+  - documentId
+  - requestBody
+  input_properties:
+  - debug
+  - documentId
+  - requestBody
+  backing_rest: PUT /assessmentinvites/:docId
+- name: hacknotice_assessment_data_file_list_files_page
+  title: List Files (Page)
+  group: assessments
+  read_only: false
+  required_inputs: []
+  input_properties:
+  - debug
+  - pageNumber
+  - requestBody
+  backing_rest: POST /assessmentdatafiles/page/:pageNum
+- name: hacknotice_assessment_data_file_count_files
+  title: Count Files
+  group: assessments
+  read_only: false
+  required_inputs: []
+  input_properties:
+  - debug
+  - requestBody
+  backing_rest: POST /assessmentdatafiles/count
+- name: hacknotice_assessment_data_file_get_file
+  title: Get File Metadata
+  group: assessments
+  read_only: true
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: GET /assessmentdatafiles/:docId
+- name: hacknotice_assessment_data_file_update_file
+  title: Update File Metadata
+  group: assessments
+  read_only: false
+  required_inputs:
+  - documentId
+  - requestBody
+  input_properties:
+  - debug
+  - documentId
+  - requestBody
+  backing_rest: PUT /assessmentdatafiles/:docId
+- name: hacknotice_assessment_data_file_download_file
+  title: Download File
+  group: assessments
+  read_only: true
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: GET /assessmentdatafiles/download/:docId
+- name: hacknotice_assessment_data_file_delete_file
+  title: Delete File
+  group: assessments
+  read_only: false
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: DELETE /assessmentdatafiles/:docId
+- name: hacknotice_invited_assessment_data_file_upload_invited_file
+  title: Upload File (Invited)
+  group: assessments-invited
+  read_only: false
+  required_inputs:
+  - assessmentId
+  - fileBase64
+  input_properties:
+  - assessmentId
+  - debug
+  - fileBase64
+  - fileName
+  - filename
+  - mimeType
+  - note
+  backing_rest: POST /assessmentdatafiles/invited
+- name: hacknotice_invited_assessment_data_file_list_invited_files_page
+  title: List Files (Page, Invited)
+  group: assessments-invited
+  read_only: false
+  required_inputs:
+  - requestBody
+  input_properties:
+  - debug
+  - pageNumber
+  - requestBody
+  backing_rest: POST /assessmentdatafiles/invited/page/:pageNum
+- name: hacknotice_invited_assessment_data_file_count_invited_files
+  title: Count Files (Invited)
+  group: assessments-invited
+  read_only: false
+  required_inputs:
+  - requestBody
+  input_properties:
+  - debug
+  - requestBody
+  backing_rest: POST /assessmentdatafiles/invited/count
+- name: hacknotice_invited_assessment_data_file_get_invited_file
+  title: Get File Metadata (Invited)
+  group: assessments-invited
+  read_only: true
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: GET /assessmentdatafiles/invited/:docId
+- name: hacknotice_invited_assessment_data_file_download_invited_file
+  title: Download File (Invited)
+  group: assessments-invited
+  read_only: true
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: GET /assessmentdatafiles/invited/download/:docId
+- name: hacknotice_invited_assessment_data_file_delete_invited_file
+  title: Delete File (Invited)
+  group: assessments-invited
+  read_only: false
+  required_inputs:
+  - documentId
+  input_properties:
+  - debug
+  - documentId
+  backing_rest: DELETE /assessmentdatafiles/invited/:docId
+- name: hacknotice_assessment_search
+  title: Search Assessments
+  group: assessments
+  read_only: true
+  required_inputs: []
+  input_properties:
+  - companyId
+  - debug
+  - limit
+  - requestBody
+  - scoreExists
+  - scoreGreaterThanOrEqual
+  - scoreLessThanOrEqual
+  - sortBy
+  - sortOrder
+  - status
+  - term
+- name: hacknotice_assessment_vendors_without_assessment
+  title: Vendors Without Assessment
+  group: assessments
+  read_only: true
+  required_inputs: []
+  input_properties:
+  - active
+  - debug
+- name: hacknotice_assessment_ai_score_unscored
+  title: AI Score Unscored Assessments
+  group: assessments
+  read_only: null
+  required_inputs: []
+  input_properties:
+  - debug
+  - maxDocs
+- name: hacknotice_third_party_watchlist_get_watchlist_domains
+  title: Get Watchlist Domains
+  group: third-party
+  read_only: true
+  required_inputs: []
+  input_properties:
+  - concernLevel
+  - debug
+  - limit
+  - sort
+- name: hacknotice_third_party_watchlist_search_domain
+  title: Search Domain
+  group: third-party
+  read_only: true
+  required_inputs:
+  - domain
+  input_properties:
+  - debug
+  - domain
+- name: hacknotice_third_party_watchlist_get_by_id
+  title: Get Third-Party Watchlist Item by ID
+  group: third-party
+  read_only: true
+  required_inputs:
+  - watchlistId
+  input_properties:
+  - debug
+  - watchlistId
+  backing_rest: GET /hackwatchlist/:watchlistId
+- name: hacknotice_third_party_watchlist_update_by_id
+  title: Update Third-Party Watchlist Item by ID
+  group: third-party
+  read_only: null
+  required_inputs:
+  - watchlistId
+  input_properties:
+  - debug
+  - tags
+  - watchlistId
+- name: hacknotice_first_party_watchlist_get_watchlist_items
+  title: Get First-Party Watchlist Items
+  group: first-party
+  read_only: true
+  required_inputs: []
+  input_properties:
+  - debug
+  - pageNumber
+  - requestBody
+- name: hacknotice_first_party_watchlist_search_item
+  title: Search First-Party Watchlist Item
+  group: first-party
+  read_only: true
+  required_inputs:
+  - domain
+  input_properties:
+  - debug
+  - domain
+  - searchOptions
+- name: hacknotice_first_party_watchlist_get_by_id
+  title: Get First-Party Watchlist Item by ID
+  group: first-party
+  read_only: true
+  required_inputs:
+  - watchlistId
+  input_properties:
+  - debug
+  - watchlistId
+  backing_rest: GET /domainwatchlist/:watchlistId
+- name: hacknotice_end_user_watchlist_get_many
+  title: Get End User Watchlist Items
+  group: end-user
+  read_only: true
+  required_inputs: []
+  input_properties:
+  - debug
+  - pageNumber
+  backing_rest: GET /enduserwatchlist/page/:pageNumber
+- name: hacknotice_end_user_watchlist_search_for_email
+  title: Search End User Watchlist for Email
+  group: end-user
+  read_only: true
+  required_inputs:
+  - emailOrHash
+  input_properties:
+  - debug
+  - emailOrHash
+- name: hacknotice_end_user_watchlist_add_item_to_watchlist
+  title: Add End User Watchlist Item
+  group: end-user
+  read_only: null
+  required_inputs:
+  - emailOrHash
+  input_properties:
+  - debug
+  - emailOrHash
+  - hashed
+  - tags
+- name: hacknotice_end_user_watchlist_get_by_id
+  title: Get End User Watchlist Item by ID
+  group: end-user
+  read_only: true
+  required_inputs:
+  - watchlistId
+  input_properties:
+  - debug
+  - watchlistId
+  backing_rest: GET /enduserwatchlist/:watchlistId
+- name: hacknotice_end_user_watchlist_delete_by_id
+  title: Delete End User Watchlist Item by ID
+  group: end-user
+  read_only: null
+  required_inputs:
+  - watchlistId
+  input_properties:
+  - debug
+  - watchlistId
+  backing_rest: DELETE /enduserwatchlist/:watchlistId
+- name: search_global_breaches
+  title: Search global breach incidents
+  group: general
+  read_only: true
+  required_inputs:
+  - term
+  input_properties:
+  - debug
+  - endDate
+  - limit
+  - sort
+  - sourcetype
+  - startDate
+  - term
+- name: hacknotice_verify_credentials
+  title: Verify HackNotice credentials
+  group: general
+  read_only: true
+  required_inputs: []
+  input_properties:
+  - debug
+- name: hacknotice_list_saved_searches
+  title: List saved searches
+  group: general
+  read_only: true
+  required_inputs:
+  - kind
+  input_properties:
+  - debug
+  - kind
+  - limit
+- name: hacknotice_third_party_alerts
+  title: Third-party hack alerts
+  group: third-party
+  read_only: true
+  required_inputs: []
+  input_properties:
+  - compact
+  - companyFilter
+  - debug
+  - endDate
+  - fields
+  - harvester
+  - hoursAgo
+  - limit
+  - region
+  - regions
+  - remediated
+  - savedSearchJson
+  - showUpdatedBreachOnly
+  - sort
+  - sourcetype
+  - startDate
+  - tag
+  - tier
+  - timeRange
+  - topNaicsCode
+  - topNaicsCodes
+- name: hacknotice_first_party_alerts
+  title: First-party domain alerts
+  group: first-party
+  read_only: true
+  required_inputs: []
+  input_properties:
+  - aiflag
+  - compact
+  - credentialDump
+  - creds
+  - debug
+  - endDate
+  - fields
+  - hoursAgo
+  - infostealer
+  - limit
+  - passwordCriteria
+  - passwordLength
+  - redactPassword
+  - savedSearchJson
+  - startDate
+  - tag
+  - tier
+  - timeRange
+  - unmatchTier
+- name: hacknotice_end_user_alerts
+  title: End-user alerts
+  group: end-user
+  read_only: true
+  required_inputs: []
+  input_properties:
+  - compact
+  - credentialDump
+  - creds
+  - debug
+  - endDate
+  - fields
+  - hashpass
+  - hoursAgo
+  - infostealer
+  - limit
+  - remediated
+  - savedSearchJson
+  - sort
+  - startDate
+  - tag
+  - taggroup
+  - term
+  - tier
+  - timeRange
+- name: hacknotice_research_phrase_alerts
+  title: Research phrase alerts
+  group: research
+  read_only: true
+  required_inputs: []
+  input_properties:
+  - compact
+  - creds
+  - credsOnly
+  - debug
+  - domainFilter
+  - endDate
+  - endpoint
+  - fields
+  - fullRecords
+  - hoursAgo
+  - limit
+  - order
+  - redacted
+  - researchSavedSearchJson
+  - searchtype
+  - startDate
+  - term
+  - timeRange
+- name: hacknotice_research_wordpool_alerts
+  title: Research wordpool alerts
+  group: research
+  read_only: true
+  required_inputs: []
+  input_properties:
+  - compact
+  - creds
+  - credsOnly
+  - debug
+  - endDate
+  - fields
+  - fullRecords
+  - hoursAgo
+  - limit
+  - match
+  - order
+  - pool
+  - redacted
+  - researchSavedSearchJson
+  - startDate
+  - timeRange
+- name: search_exposure
+  title: Search structured leak records (not chatter)
+  group: general
+  read_only: true
+  required_inputs:
+  - query
+  input_properties:
+  - debug
+  - endDate
+  - include_credentials
+  - limit
+  - only_credentials
+  - password_criteria
+  - password_length
+  - query
+  - searchtype
+  - startDate
+  - time_range_hours
+- name: search_chatter
+  title: Search breach/leak chatter and forum posts
+  group: general
+  read_only: true
+  required_inputs:
+  - query
+  input_properties:
+  - debug
+  - endDate
+  - limit
+  - query
+  - searchtype
+  - startDate
+  - time_range_hours
+- name: search_credential_leaks
+  title: Search credential leaks
+  group: general
+  read_only: true
+  required_inputs:
+  - domain
+  input_properties:
+  - debug
+  - domain
+  - endDate
+  - limit
+  - password_criteria
+  - password_length
+  - searchtype
+  - startDate
+  - time_range_hours
+- name: search_leaked_files
+  title: Search leaked files
+  group: general
+  read_only: true
+  required_inputs:
+  - query
+  input_properties:
+  - debug
+  - endDate
+  - file_categories
+  - filename_pattern
+  - limit
+  - query
+  - searchtype
+  - startDate
+  - time_range_hours
+- name: search_correlated_leaks
+  title: Correlated threat search
+  group: general
+  read_only: true
+  required_inputs:
+  - keywords
+  input_properties:
+  - debug
+  - endDate
+  - keywords
+  - limit
+  - minimum_match
+  - startDate
+  - time_range_hours
+x-evidence:
+- url: https://mcp.hacknotice.com:13330/mcp
+  method: POST initialize
+  http_status: 200
+  content_type: application/json
+- url: https://mcp.hacknotice.com:13330/mcp
+  method: POST tools/list
+  http_status: 200
+  content_type: application/json
+  bytes: 100701
+- url: https://mcp.hacknotice.com:13330/.well-known/oauth-protected-resource
+  http_status: 404

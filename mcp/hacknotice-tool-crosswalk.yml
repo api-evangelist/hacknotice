@@ -1,0 +1,839 @@
+generated: '2026-08-22'
+method: derived
+source:
+- mcp/hacknotice-mcp-tools.json (live tools/list, HTTP 200)
+- openapi/hacknotice-openapi.yml
+note: Each HackNotice MCP tool states its own backing REST route on the first line of its description (e.g. 'GET /assessments/:docId').
+  Binding is therefore read from the provider's own declaration, not guessed — the tool's real inputSchema is published
+  in mcp/hacknotice-mcp-tools.json and is authoritative over the derived OpenAPI parameters.
+surfaces:
+  openapi:
+    file: openapi/hacknotice-openapi.yml
+    operations: 249
+    gated: false
+    derived_from: https://api-docs.hacknotice.com
+  mcp:
+    url: https://mcp.hacknotice.com:13330/mcp
+    tools: 80
+    gated: false
+    note: tools/list answers anonymously; tools/call requires X-HackNotice-Integration-Key.
+  graphql: null
+coverage:
+  tools_named: 80
+  tools_bound: 54
+  mcp_only: 26
+  rest_operations_total: 249
+  rest_operations_with_tool: 54
+  rest_only: 195
+crosswalk:
+- tool: hacknotice_assessment_get_assessment_invite
+  title: Get Assessment Invite
+  category: assessments
+  declared_route: GET /assessments/invited/:docId
+  rest:
+  - getReadAnInvite
+  binding: rest
+  confidence: high
+  read_only: true
+- tool: hacknotice_assessment_update_assessment_invite
+  title: Update Assessment Invite
+  category: assessments
+  declared_route: PUT /assessments/invited/:docId
+  rest:
+  - putUpdateInvite
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_list_assessments_page
+  title: List Assessments (Page)
+  category: assessments
+  declared_route: POST /assessments/page/:pageNum
+  rest:
+  - postAPageOfDocuments
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_count_assessments
+  title: Count Assessments
+  category: assessments
+  declared_route: POST /assessments/count
+  rest:
+  - postTheCountOfDocuments
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_get_assessment
+  title: Get Assessment
+  category: assessments
+  declared_route: GET /assessments/:docId
+  rest:
+  - getReadADoc5
+  binding: rest
+  confidence: high
+  read_only: true
+- tool: hacknotice_assessment_projection_assessments
+  title: Projection Assessments
+  category: assessments
+  declared_route: POST /assessments/projection
+  rest:
+  - postProjection
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_delete_assessment
+  title: Delete Assessment
+  category: assessments
+  declared_route: DELETE /assessments/:docId
+  rest:
+  - deleteADoc5
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_update_assessment
+  title: Update Assessment
+  category: assessments
+  declared_route: PUT /assessments/:docId
+  rest:
+  - putUpdateADoc3
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_event_invited_list_events_page
+  title: Invited - List Events (Page)
+  category: assessments
+  declared_route: POST /assessmentevents/invited/page/:pageNum
+  rest:
+  - postListInvitedAssessmentEventsPaginated
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_event_invited_create_event
+  title: Invited - Create Event
+  category: assessments
+  declared_route: POST /assessmentevents/invited
+  rest:
+  - postCreateInvitedAssessmentEvent
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_event_invited_get_event
+  title: Invited - Get Event
+  category: assessments
+  declared_route: GET /assessmentevents/invited/:docId
+  rest:
+  - getOneInvitedAssessmentEvent
+  binding: rest
+  confidence: high
+  read_only: true
+- tool: hacknotice_assessment_event_invited_delete_event
+  title: Invited - Delete Event
+  category: assessments
+  declared_route: DELETE /assessmentevents/invited/:docId
+  rest:
+  - deleteOneInvitedAssessmentEvent
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_event_invited_update_event
+  title: Invited - Update Event
+  category: assessments
+  declared_route: PUT /assessmentevents/invited/:docId
+  rest:
+  - putUpdateOneInvitedAssessmentEvent
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_event_list_events_page
+  title: List Events (Page)
+  category: assessments
+  declared_route: POST /assessmentevents/page/:pageNum
+  rest:
+  - postListAssessmentEventsPaginated
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_event_count_events
+  title: Count Events
+  category: assessments
+  declared_route: POST /assessmentevents/count
+  rest:
+  - postCountAssessmentEvents
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_event_create_event
+  title: Create Event
+  category: assessments
+  declared_route: POST /assessmentevents
+  rest:
+  - postCreateAssessmentEvent
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_event_get_event
+  title: Get Event
+  category: assessments
+  declared_route: GET /assessmentevents/:docId
+  rest:
+  - getOneAssessmentEvent
+  binding: rest
+  confidence: high
+  read_only: true
+- tool: hacknotice_assessment_event_delete_event
+  title: Delete Event
+  category: assessments
+  declared_route: DELETE /assessmentevents/:docId
+  rest:
+  - deleteOneAssessmentEvent
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_event_update_event
+  title: Update Event
+  category: assessments
+  declared_route: PUT /assessmentevents/:docId
+  rest:
+  - putUpdateOneAssessmentEvent
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_template_list_templates_page
+  title: List Templates (Page)
+  category: assessments
+  declared_route: POST /assessmenttemplates/page/:pageNum
+  rest:
+  - postListTemplatesPaginated
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_template_list_template_frameworks
+  title: List Template Frameworks
+  category: assessments
+  declared_route: GET /assessmenttemplates/frameworks
+  rest:
+  - getListAvailableFrameworks
+  binding: rest
+  confidence: high
+  read_only: true
+- tool: hacknotice_assessment_template_count_templates
+  title: Count Templates
+  category: assessments
+  declared_route: POST /assessmenttemplates/count
+  rest:
+  - postCountTemplates
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_template_create_template
+  title: Create Template
+  category: assessments
+  declared_route: POST /assessmenttemplates
+  rest:
+  - postCreateTemplate
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_template_get_template
+  title: Get Template
+  category: assessments
+  declared_route: GET /assessmenttemplates/:docId
+  rest:
+  - getReadOneTemplate
+  binding: rest
+  confidence: high
+  read_only: true
+- tool: hacknotice_assessment_template_delete_template
+  title: Delete Template
+  category: assessments
+  declared_route: DELETE /assessmenttemplates/:docId
+  rest:
+  - deleteOneTemplate
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_template_update_template
+  title: Update Template
+  category: assessments
+  declared_route: PUT /assessmenttemplates/:docId
+  rest:
+  - putUpdateOneTemplate
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_preference_create_preferences
+  title: Create Preferences
+  category: assessments
+  declared_route: POST /assessmentpreferences
+  rest:
+  - postCreatePreferences
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_preference_get_preferences
+  title: Get Preferences
+  category: assessments
+  declared_route: GET /assessmentpreferences
+  rest:
+  - getPreferences
+  binding: rest
+  confidence: high
+  read_only: true
+- tool: hacknotice_assessment_preference_delete_preferences
+  title: Delete Preferences
+  category: assessments
+  declared_route: DELETE /assessmentpreferences
+  rest:
+  - deletePreferences
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_preference_update_preferences
+  title: Update Preferences
+  category: assessments
+  declared_route: PUT /assessmentpreferences
+  rest:
+  - putUpdatePreferences
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_invite_list_invites_page
+  title: List Invites (Page)
+  category: assessments
+  declared_route: POST /assessmentinvites/page/:pageNum
+  rest:
+  - postListInvitesPaginated
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_invite_count_invites
+  title: Count Invites
+  category: assessments
+  declared_route: POST /assessmentinvites/count
+  rest:
+  - postCountInvites
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_invite_create_invite
+  title: Create Invite
+  category: assessments
+  declared_route: POST /assessmentinvites
+  rest:
+  - postCreateInvite
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_invite_get_invite
+  title: Get Invite
+  category: assessments
+  declared_route: GET /assessmentinvites/:docId
+  rest:
+  - getReadInviteById
+  binding: rest
+  confidence: high
+  read_only: true
+- tool: hacknotice_assessment_invite_list_my_invites
+  title: List My Invites
+  category: assessments
+  declared_route: GET /assessmentinvites/mine
+  rest:
+  - getMyInvitesInvitedUserView
+  binding: rest
+  confidence: high
+  read_only: true
+- tool: hacknotice_assessment_invite_delete_invite
+  title: Delete Invite
+  category: assessments
+  declared_route: DELETE /assessmentinvites/:docId
+  rest:
+  - deleteInviteById
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_invite_update_invite
+  title: Update Invite
+  category: assessments
+  declared_route: PUT /assessmentinvites/:docId
+  rest:
+  - putUpdateInviteById
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_data_file_list_files_page
+  title: List Files (Page)
+  category: assessments
+  declared_route: POST /assessmentdatafiles/page/:pageNum
+  rest:
+  - postReadAPageOfDocuments4
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_data_file_count_files
+  title: Count Files
+  category: assessments
+  declared_route: POST /assessmentdatafiles/count
+  rest:
+  - postGetTheCountOfDocuments2
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_data_file_get_file
+  title: Get File Metadata
+  category: assessments
+  declared_route: GET /assessmentdatafiles/:docId
+  rest:
+  - getReadADoc7
+  binding: rest
+  confidence: high
+  read_only: true
+- tool: hacknotice_assessment_data_file_update_file
+  title: Update File Metadata
+  category: assessments
+  declared_route: PUT /assessmentdatafiles/:docId
+  rest:
+  - putUpdateADoc4
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_assessment_data_file_download_file
+  title: Download File
+  category: assessments
+  declared_route: GET /assessmentdatafiles/download/:docId
+  rest:
+  - getDownloadADoc2
+  binding: rest
+  confidence: high
+  read_only: true
+- tool: hacknotice_assessment_data_file_delete_file
+  title: Delete File
+  category: assessments
+  declared_route: DELETE /assessmentdatafiles/:docId
+  rest:
+  - deleteADoc7
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_invited_assessment_data_file_upload_invited_file
+  title: Upload File (Invited)
+  category: assessments-invited
+  declared_route: POST /assessmentdatafiles/invited
+  rest:
+  - postCreateADoc5
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_invited_assessment_data_file_list_invited_files_page
+  title: List Files (Page, Invited)
+  category: assessments-invited
+  declared_route: POST /assessmentdatafiles/invited/page/:pageNum
+  rest:
+  - postReadAPageOfDocuments3
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_invited_assessment_data_file_count_invited_files
+  title: Count Files (Invited)
+  category: assessments-invited
+  declared_route: POST /assessmentdatafiles/invited/count
+  rest:
+  - postGetTheCountOfDocuments
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_invited_assessment_data_file_get_invited_file
+  title: Get File Metadata (Invited)
+  category: assessments-invited
+  declared_route: GET /assessmentdatafiles/invited/:docId
+  rest:
+  - getReadADoc6
+  binding: rest
+  confidence: high
+  read_only: true
+- tool: hacknotice_invited_assessment_data_file_download_invited_file
+  title: Download File (Invited)
+  category: assessments-invited
+  declared_route: GET /assessmentdatafiles/invited/download/:docId
+  rest:
+  - getDownloadADoc
+  binding: rest
+  confidence: high
+  read_only: true
+- tool: hacknotice_invited_assessment_data_file_delete_invited_file
+  title: Delete File (Invited)
+  category: assessments-invited
+  declared_route: DELETE /assessmentdatafiles/invited/:docId
+  rest:
+  - deleteADoc6
+  binding: rest
+  confidence: high
+  read_only: false
+- tool: hacknotice_third_party_watchlist_get_by_id
+  title: Get Third-Party Watchlist Item by ID
+  category: third-party
+  declared_route: GET /hackwatchlist/:watchlistId
+  rest:
+  - getReadADoc4
+  binding: rest
+  confidence: high
+  read_only: true
+- tool: hacknotice_first_party_watchlist_get_by_id
+  title: Get First-Party Watchlist Item by ID
+  category: first-party
+  declared_route: GET /domainwatchlist/:watchlistId
+  rest:
+  - getReadADoc8
+  binding: rest
+  confidence: high
+  read_only: true
+- tool: hacknotice_end_user_watchlist_get_many
+  title: Get End User Watchlist Items
+  category: end-user
+  declared_route: GET /enduserwatchlist/page/:pageNumber
+  rest:
+  - getReadAPageOfDocuments7
+  binding: rest
+  confidence: high
+  read_only: true
+- tool: hacknotice_end_user_watchlist_get_by_id
+  title: Get End User Watchlist Item by ID
+  category: end-user
+  declared_route: GET /enduserwatchlist/:watchlistId
+  rest:
+  - getReadADoc10
+  binding: rest
+  confidence: high
+  read_only: true
+- tool: hacknotice_end_user_watchlist_delete_by_id
+  title: Delete End User Watchlist Item by ID
+  category: end-user
+  declared_route: DELETE /enduserwatchlist/:watchlistId
+  rest:
+  - deleteADoc8
+  binding: rest
+  confidence: high
+  read_only: null
+mcp_only:
+- tool: hacknotice_assessment_ai_score_assessment
+  category: assessments
+  declared_route: POST /assessments/ai-score/:docId
+  reason: Tool names a REST route that does not appear in the published Postman collection the OpenAPI was derived from
+    — the MCP surface exposes operations the public collection does not document.
+- tool: hacknotice_assessment_invite_get_invite_by_code
+  category: assessments
+  declared_route: GET /assessmentinvites/code/:inviteCode
+  reason: Tool names a REST route that does not appear in the published Postman collection the OpenAPI was derived from
+    — the MCP surface exposes operations the public collection does not document.
+- tool: hacknotice_assessment_invite_activate_invite
+  category: assessments
+  declared_route: POST /assessmentinvites/activate/:inviteCode
+  reason: Tool names a REST route that does not appear in the published Postman collection the OpenAPI was derived from
+    — the MCP surface exposes operations the public collection does not document.
+- tool: hacknotice_assessment_search
+  category: assessments
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: hacknotice_assessment_vendors_without_assessment
+  category: assessments
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: hacknotice_assessment_ai_score_unscored
+  category: assessments
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: hacknotice_third_party_watchlist_get_watchlist_domains
+  category: third-party
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: hacknotice_third_party_watchlist_search_domain
+  category: third-party
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: hacknotice_third_party_watchlist_update_by_id
+  category: third-party
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: hacknotice_first_party_watchlist_get_watchlist_items
+  category: first-party
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: hacknotice_first_party_watchlist_search_item
+  category: first-party
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: hacknotice_end_user_watchlist_search_for_email
+  category: end-user
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: hacknotice_end_user_watchlist_add_item_to_watchlist
+  category: end-user
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: search_global_breaches
+  category: general
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: hacknotice_verify_credentials
+  category: general
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: hacknotice_list_saved_searches
+  category: general
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: hacknotice_third_party_alerts
+  category: third-party
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: hacknotice_first_party_alerts
+  category: first-party
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: hacknotice_end_user_alerts
+  category: end-user
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: hacknotice_research_phrase_alerts
+  category: research
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: hacknotice_research_wordpool_alerts
+  category: research
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: search_exposure
+  category: general
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: search_chatter
+  category: general
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: search_credential_leaks
+  category: general
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: search_leaked_files
+  category: general
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+- tool: search_correlated_leaks
+  category: general
+  reason: Tool declares no backing REST route in its own description; it is a server-side composite or search facade
+    over HackNotice research/breach indexes with no single published REST operation.
+rest_only:
+- tag: Alerts
+  count: 7
+  operations:
+  - getListSavedSearchesByProductKey
+  - postReadEndUserAlertsPage
+  - postReadFirstPartyAlertsPage
+  - postReadThirdPartyAlertsPage
+  - postSearchResearchPhraseAlertsPage
+  - postSearchResearchPhraseFilenameAlertsPage
+  - postSearchResearchWordPoolAlertsPage
+- tag: All Business Accounts
+  count: 36
+  operations:
+  - deleteADoc
+  - deleteADoc2
+  - getDownloadFile
+  - getReadACountOfDocuments
+  - getReadADoc
+  - getReadADoc2
+  - getReadADocument
+  - getReadADocument2
+  - getReadADocument3
+  - getReadADocument4
+  - getReadADocument5
+  - getReadAPageOfDocuments
+  - getReadAPageOfDocuments2
+  - getReadAccounts
+  - getReadCount
+  - getReadDownloadsToSeeIfFileIsReady
+  - getReadLatest
+  - getReadPage
+  - getSignOut
+  - getSignOutAllSessions
+  - getTheCountOfDocuments
+  - getTheCountOfDocuments2
+  - post2FaSignIn
+  - postCreateADoc
+  - postCreateASha512HalfHash
+  - postCreateASha512Hash
+  - postFindOne
+  - postGetByFilename
+  - postSearchAll
+  - postSearchAll2
+  - postSearchForANoteForAnItem
+  - postSearchForANoteForAnItem2
+  - postSignIn
+  - postUpdateADocument
+  - putUpdateADoc
+  - putUpdateHabits
+- tag: Calc endpoints
+  count: 28
+  operations:
+  - getBreachcalcsDocid
+  - getDomainalertcalcsDocid
+  - getEnduseralertcalcsDocid
+  - getHackalertcalcsDocid
+  - getThreatactorcalcsDocid
+  - postBreachcalcsAggregatedates
+  - postBreachcalcsCount
+  - postBreachcalcsListdates
+  - postBreachcalcsPagePagenum
+  - postDomainalertcalcsAggregatedates
+  - postDomainalertcalcsCount
+  - postDomainalertcalcsListdates
+  - postDomainalertcalcsPagePagenum
+  - postDomainalertcalcsStatsAggregatedates
+  - postEnduseralertcalcsAggregatedates
+  - postEnduseralertcalcsCount
+  - postEnduseralertcalcsListdates
+  - postEnduseralertcalcsPagePagenum
+  - postHackalertcalcsAggregatedates
+  - postHackalertcalcsCount
+  - postHackalertcalcsListdates
+  - postHackalertcalcsPagePagenum
+  - postThreatactorcalcsAggregatedates
+  - postThreatactorcalcsAggregatedistinct
+  - postThreatactorcalcsCount
+  - postThreatactorcalcsDistinct
+  - postThreatactorcalcsListdates
+  - postThreatactorcalcsPagePagenum
+- tag: Deprecated
+  count: 11
+  operations:
+  - getReadADocument11
+  - getReadADocument12
+  - getReadAPageOfAlerts2
+  - getReadActiveDocsCount
+  - getReadActiveDocsPage
+  - getReadCountForANumberOfPreviousDaysOfAlerts2
+  - getReadCountForAlerts3
+  - postAPageOfAlertsWithOptions2
+  - postReadCountForTerm
+  - postSearchEmailWithinAlerts2
+  - putUpdateHabits2
+- tag: Domain Business Accounts
+  count: 34
+  operations:
+  - getCreateCsvForAllDomains
+  - getCreateCsvForAllDomainsForTheLast30Days
+  - getCreateCsvForDomain
+  - getCreateCsvForDomainLast30Days
+  - getReadADoc9
+  - getReadAPage
+  - getReadAPageOfAlertsAndLeaksForADomain
+  - getReadAPageOfCredentialsForADomain
+  - getReadAlertsLastDate
+  - getReadAlertsLastDateForADomain
+  - getReadAnAlert
+  - getReadAnAlertForADomain
+  - getReadCountForADomain
+  - getReadDocuments
+  - getReadPageForADomain
+  - getReadPageForAnAccount
+  - getReadPageOfAlertsAndLeaksForAnAccount
+  - getReadPageOfCredentialsForAnAccount
+  - getReadPageOfDeletedAlertsForAnAccount
+  - getTheCountOfAllDocuments
+  - postCreateCsvForAllDomains
+  - postCreateCsvForDomainCopy
+  - postReadAPageWithParameters
+  - postReadAPageWithParameters2
+  - postReadCountForAnAccount
+  - postReadPageForADomain
+  - postSearchDomainWithinWatchlist
+  - postSearchHitValue
+  - postSearchHitValueWithinADomain
+  - putFixDomainalertsForAListOfAlertIds
+  - putUpdateAllAlertsForADomain
+  - putUpdateAllAlertsForADomainAndAnEmail
+  - putUpdateAnAlert
+  - putUpdateAnAlertForADomain
+- tag: Enduser Business Accounts
+  count: 21
+  operations:
+  - getReadADocument10
+  - getReadAPageOfAlerts
+  - getReadAPageOfAlertsAndLeaks
+  - getReadAPageOfAlertsAndLeaksForANumberOfPreviousDaysOfAlerts
+  - getReadAPageOfDeletedAlerts
+  - getReadCountForANumberOfPreviousDaysOfAlerts
+  - getReadCountForAlerts2
+  - getReadLastAlertDate2
+  - getReadPageOfCredentials
+  - getTheCountOfDocuments5
+  - postAPageOfAlertsWithOptions
+  - postCreateADoc6
+  - postPageOfCredentialsWithOptions
+  - postReadADoc
+  - postSearchEmailWithinAlerts
+  - postSearchEmailWithinAlertsByPage
+  - postSearchForAnEmail
+  - postUpdateEnduseralertsTagsForAnEmail
+  - putFixEnduseralertsForAListOfAlertIds
+  - putUpdateADocument2
+  - putUpdateAllDocumentsForAnEmail
+- tag: Research Service Accounts
+  count: 14
+  operations:
+  - deleteADoc3
+  - getReadADoc3
+  - getReadAPageOfDocuments3
+  - getRunSearchADoc
+  - getTheCountOfDocuments3
+  - postCountSearchFilenameTerm
+  - postCountSearchTerm
+  - postCountWordPool
+  - postCreateADoc2
+  - postSearchFilenameTermAndPage
+  - postSearchForASearchName
+  - postSearchTermAndPage
+  - postSearchWordPoolAndPage
+  - putUpdateADoc2
+- tag: Third Party Accounts
+  count: 44
+  operations:
+  - deleteADoc4
+  - getReadADocument6
+  - getReadADocument7
+  - getReadADocument8
+  - getReadADocument9
+  - getReadAPageOfAlertsSortedByPublishedDate
+  - getReadAPageOfAlertsSortedByTimestamp
+  - getReadAPageOfDocuments4
+  - getReadAPageOfDocuments5
+  - getReadAPageOfDocuments6
+  - getReadAPageOfDocumentsSortedByTimestampCreation
+  - getReadCountForANumberOfPreviousPublishedDateDaysOfAlerts
+  - getReadCountForANumberOfPreviousTimestampDaysOfAlerts
+  - getReadCountForAlerts
+  - getReadCountForDistinctWatchlistItems
+  - getReadCountOfAllDocuments
+  - getReadInviteByCode
+  - getReadLastAlertDate
+  - getReadPageForDistinctWatchlistItems
+  - getReadRansomwareHarvestersAll
+  - getTheCountOfDocuments4
+  - postActivateInvite
+  - postCreateADoc3
+  - postCreateADoc4
+  - postCreateAssessmentExcelReport
+  - postCreateAssessmentPdfReport
+  - postCreateInvitedAssessmentExcelReport
+  - postCreateInvitedAssessmentPdfReport
+  - postDeleteHackalertsForAHackwatchlistId
+  - postGetTheCountOfDocumentsWithOptions
+  - postReadAPageOfAlertsSortedByPublishedDate
+  - postReadAPageOfDocuments
+  - postReadAPageOfDocuments2
+  - postReadCountOfAllDocuments
+  - postReadCountOfDocumentsWithinADateRange
+  - postSearchAPage
+  - postSearchAll3
+  - postSearchAll4
+  - postSearchDomainWithinAlerts
+  - postSearchForADomain
+  truncated: true

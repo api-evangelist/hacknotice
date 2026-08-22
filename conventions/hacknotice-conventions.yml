@@ -1,0 +1,116 @@
+generated: '2026-08-22'
+method: searched
+source:
+- https://api-docs.hacknotice.com
+- mcp/hacknotice-mcp-tools.json
+- openapi/hacknotice-openapi.yml
+- https://github.com/HackNotice/n8n-nodes-hacknotice
+authentication:
+  style: header-api-key
+  primary: 'Authorization: JWT <token> — obtained from POST /auth/sign_in with email + password. HackNotice''s own docs stress the literal "JWT " prefix; this is NOT RFC 6750 Bearer.'
+  secondary: 'apikey: <key> — a lower-case header sent alongside the JWT on most operations.'
+  alternative: 'X-HackNotice-Integration-Key: hn_ik_... — a single per-user integration secret that replaces apiKey + email + password. Also the credential the MCP server uses.'
+  content_type_required: true
+  content_type_note: 'HackNotice explicitly warns that its own Postman sample code omits the Content-Type header and that it is required — e.g. application/x-www-form-urlencoded.'
+  see: authentication/hacknotice-authentication.yml
+request_encoding:
+  dominant: application/x-www-form-urlencoded
+  also: [application/json, multipart/form-data]
+  note: '145 of the documented requests post application/x-www-form-urlencoded and 85 post JSON. A form-encoded default is unusual for a 2026 API and is the single most common integration mistake this API invites.'
+pagination:
+  style: path-segment
+  pattern: 'POST /<resource>/page/{pageNum} — the page number is a PATH segment, not a query parameter.'
+  page_param: pageNum
+  size_param: null
+  size_note: Page size is not documented as a caller-controlled parameter on the REST surface.
+  count_companion: 'Most paged collections ship a sibling POST /<resource>/count that returns the total, so a caller sizes the result set with a second call rather than reading a total off the page response.'
+  mcp_equivalent: 'MCP tools expose the same shape as a pageNumber input, plus sortBy / sortOrder inputs on the assessment tools.'
+filtering:
+  term: 'A free-text `term` filter is the primary narrowing mechanism on assessments and research tools. The MCP server''s own instructions insist on it: "ALWAYS pass term ... never fetch all assessments without a filter when the user named a vendor."'
+  saved_searches: 'Saved searches are first-class: hacknotice_list_saved_searches returns saved-search payloads that are then passed back into alert tools as savedSearchJson / researchSavedSearchJson.'
+  time_windows:
+    time_range: [lastDay, lastWeek, lastMonth]
+    fixed: startDate / endDate, ISO 8601
+    rolling: 'hoursAgo / time_range_hours accepts 8–72 hours ONLY. Values under 8 are silently coerced to 8; over 72 is rejected and requires a date range instead.'
+    source: MCP server initialize instructions
+field_expansion:
+  supported: false
+  projection: 'A POST /assessments/projection operation exists, which is the nearest thing to sparse fieldsets on this API.'
+metadata:
+  supported: false
+request_tracing:
+  header: null
+  documented: false
+  debug_mode:
+    supported: true
+    surface: mcp
+    parameter: debug
+    note: 'Every MCP tool accepts a boolean `debug` input. When true the tool response carries a `_debug` block containing the inbound MCP and outbound extension-API request/response traces, with secrets redacted. This is a genuine agent-debuggability affordance and has no REST equivalent.'
+versioning:
+  scheme: none-in-path
+  note: 'No version segment appears in any documented path. Version drift is visible only through resource naming — e.g. /leakreportsv2 sits beside older leak resources — and through a "Deprecated" folder in the published collection.'
+  see: lifecycle/hacknotice-lifecycle.yml
+error_envelope:
+  format: vendor-json
+  shape: '{"message": "<text>"}'
+  observed:
+  - {host: extensionapi.hacknotice.com, status: 401, body: '{"message":"Unauthorized user!"}'}
+  - {host: api.hacknotice.com, status: 404, body: '{"message":"Not found"}'}
+  rfc9457: false
+  note: 'Not RFC 9457 problem+json. A flat message string with no type, code, title or instance member, so an agent cannot branch on a machine-readable error identity.'
+  see: errors/hacknotice-problem-types.yml
+rate_limit_signaling:
+  documented_limit: 1 request per second (global)
+  headers: none documented
+  see: rate-limits/hacknotice-rate-limits.yml
+idempotency:
+  supported: false
+  header: null
+  note: 'NO idempotency contract. HackNotice documents no Idempotency-Key header or equivalent, and
+    no idempotency parameter appears in the published collection or in any of the 80 MCP tool
+    inputSchemas. Deliberately NOT wired as a common[].type Idempotency pointer: 38 of the 80 MCP
+    tools are write tools, several of them destructive deletes, and an agent retrying a timed-out
+    create has no published way to make that retry safe.'
+dry_run_mode:
+  supported: false
+  note: No preview, validate-only or simulate parameter is documented on any write operation.
+reversibility:
+  grade: none
+  applicable: true
+  note: 'The API has a substantial write surface — 38 of 80 MCP tools are non-read-only, including
+    DELETE operations on assessments, assessment events, templates, invites, preferences, data files
+    and end-user watchlist items — and HackNotice documents NO reversal operation and NO window for
+    any of them. There is no cancel, undo, restore, trash, soft-delete or recover route in the
+    published collection, none in the MCP tool catalogue, and no retention statement in the help
+    centre. An agent deleting an assessment template or a watchlist item must treat the action as
+    permanent. Nothing here is asserted beyond that absence: no window is stated because HackNotice
+    states none.'
+  write_surfaces:
+  - surface: Assessments
+    destructive_operations: [hacknotice_assessment_delete_assessment, hacknotice_assessment_event_delete_event, hacknotice_assessment_template_delete_template, hacknotice_assessment_invite_delete_invite, hacknotice_assessment_preference_delete_preferences]
+    reversal_operation: null
+    window: null
+    docs: null
+  - surface: Assessment data files
+    destructive_operations: [hacknotice_assessment_data_file_delete_file, hacknotice_invited_assessment_data_file_delete_invited_file]
+    reversal_operation: null
+    window: null
+    docs: null
+  - surface: End-user watchlist
+    destructive_operations: [hacknotice_end_user_watchlist_delete_by_id]
+    reversal_operation: null
+    window: null
+    docs: null
+    note: 'Re-adding a deleted watchlist item via hacknotice_end_user_watchlist_add_item_to_watchlist restores monitoring going forward but is a new create, not a reversal — HackNotice does not state that prior alert history is recovered.'
+  - surface: Account closure
+    destructive_operations: [account deletion]
+    reversal_operation: null
+    window: null
+    docs: https://hacknotice.zendesk.com/hc/en-us/articles/13829329541268-FAQ
+    note: 'Handled out of band, by emailing support@hacknotice.com to have the account "disabled and information deleted". No API route and no stated grace period.'
+cross_links:
+  errors: errors/hacknotice-problem-types.yml
+  lifecycle: lifecycle/hacknotice-lifecycle.yml
+  authentication: authentication/hacknotice-authentication.yml
+  rate_limits: rate-limits/hacknotice-rate-limits.yml
+  mcp: mcp/hacknotice-mcp.yml

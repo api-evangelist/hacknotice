@@ -1,23 +1,170 @@
 aid: hacknotice
 name: HackNotice
-description: 'HackNotice is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'HackNotice is an external threat-intelligence and cyber-risk platform founded in 2018 and headquartered
+  in Austin, Texas. It continuously collects intelligence from ransomware groups, infostealer malware logs, data
+  breaches, dark-web marketplaces, hacker forums and public disclosures, then matches that intelligence against the
+  domains, employees, customers and vendors an organization asks it to watch. The product is organized around four
+  monitoring services — first-party domain monitoring, third-party vendor risk monitoring, end-user credential
+  monitoring, and threat research and investigations — plus AI-assisted vendor security assessments. HackNotice
+  exposes this surface programmatically through a REST API documented as a public Postman collection at
+  api-docs.hacknotice.com, a remote Model Context Protocol server at mcp.hacknotice.com whose tool catalogue answers
+  anonymously, first-party n8n automation nodes on npm, and webhook, Splunk HEC and SIEM/SOAR alert delivery.'
+image: https://hacknotice.com/wp-content/uploads/2022/12/favicon.png
 url: https://raw.githubusercontent.com/api-evangelist/hacknotice/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-22'
 modified: '2026-08-22'
 tags:
 - Company
-apis: []
+- Security
+- Threat Intelligence
+- Cybersecurity
+- Dark Web Monitoring
+- Data Breaches
+- Credential Monitoring
+- Third Party Risk
+- Vendor Risk Management
+- Vulnerability Management
+- Ransomware
+- Security Assessments
+- Alerts
+- Monitoring
+apis:
+- aid: hacknotice:hacknotice-api
+  name: HackNotice API
+  description: 'REST API over the HackNotice threat-intelligence platform: authentication, leak and leak-file search,
+    first-party domain watchlists and alerts, third-party vendor watchlists, hacks and alerts, end-user watchlists
+    and alerts, threat-research search over terms, filenames and word pools, vendor security assessments with
+    AI scoring, and aggregate calculation endpoints. Documented by HackNotice as a public Postman collection; access
+    is granted to approved accounts after a consultation call.'
+  humanURL: https://api-docs.hacknotice.com
+  baseURL: https://extensionapi.hacknotice.com
+  tags:
+  - Threat Intelligence
+  - Security
+  - Monitoring
+  - Alerts
+  - Third Party Risk
+  properties:
+  - type: OpenAPI
+    url: openapi/hacknotice-openapi.yml
+  - type: Overlay
+    url: overlays/hacknotice-openapi-overlay.yaml
+  - type: Documentation
+    url: https://api-docs.hacknotice.com
+  - type: APIReference
+    url: https://api-docs.hacknotice.com
+  - type: Postman
+    url: https://api-docs.hacknotice.com
+  - type: Authentication
+    url: authentication/hacknotice-authentication.yml
+  - type: RateLimits
+    url: rate-limits/hacknotice-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/hacknotice-problem-types.yml
+  - type: DataModel
+    url: data-model/hacknotice-data-model.yml
+  - type: Conventions
+    url: conventions/hacknotice-conventions.yml
+- aid: hacknotice:hacknotice-mcp
+  name: HackNotice MCP Server
+  description: 'Remote Model Context Protocol server operated by HackNotice, speaking JSON-RPC 2.0 over Streamable
+    HTTP at https://mcp.hacknotice.com:13330/mcp. It publishes 80 tools across third-party, first-party, end-user,
+    research and assessment groups, plus cross-cutting global-breach, exposure, chatter, credential-leak, leaked-file
+    and correlated-leak search. tools/list and initialize answer anonymously, so every tool inputSchema is public;
+    tools/call is gated on a per-user X-HackNotice-Integration-Key.'
+  humanURL: https://github.com/HackNotice/n8n-nodes-hacknotice-mcp
+  baseURL: https://mcp.hacknotice.com:13330/mcp
+  tags:
+  - MCP
+  - Agents
+  - Threat Intelligence
+  - Security
+  properties:
+  - type: MCPServer
+    url: mcp/hacknotice-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/hacknotice-tool-crosswalk.yml
+  - type: SourceCode
+    url: https://github.com/HackNotice/n8n-nodes-hacknotice-mcp
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/hacknotice-domain-security.yml
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://hacknotice.com/
+- type: DeveloperPortal
+  url: https://api-docs.hacknotice.com
+- type: Documentation
+  url: https://hacknotice.zendesk.com/hc/en-us
+- type: APIReference
+  url: https://api-docs.hacknotice.com
+- type: GettingStarted
+  url: https://hacknotice.zendesk.com/hc/en-us/articles/13771563959828-Overview-Getting-Started-for-Sec-Teams
+- type: Support
+  url: https://hacknotice.zendesk.com/hc/en-us
+- type: HelpCenter
+  url: https://hacknotice.zendesk.com/hc/en-us
+- type: Blog
+  url: https://hacknotice.com/category/blog/
+- type: BlogRSS
+  url: https://hacknotice.com/feed/
+- type: GitHubOrganization
+  url: https://github.com/HackNotice
+- type: Pricing
+  url: https://hacknotice.com/pricing/
+- type: SignUp
+  url: https://hacknotice.com/free-account/
+- type: Login
+  url: https://app.hacknotice.com/
+- type: TermsOfService
+  url: https://hacknotice.com/businesstandc/
+- type: PrivacyPolicy
+  url: https://hacknotice.com/privacy/
+- type: Postman
+  url: https://api-docs.hacknotice.com
+- type: OpenAPI
+  url: openapi/hacknotice-openapi.yml
+- type: MCPServer
+  url: mcp/hacknotice-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/hacknotice-tool-crosswalk.yml
+- type: Packages
+  url: packages/hacknotice-packages.yml
+- type: SDKs
+  url: packages/hacknotice-packages.yml
+- type: Authentication
+  url: authentication/hacknotice-authentication.yml
+- type: RateLimits
+  url: rate-limits/hacknotice-rate-limits.yml
+- type: Plans
+  url: plans/hacknotice-plans-pricing.yml
+- type: Conventions
+  url: conventions/hacknotice-conventions.yml
+- type: ErrorCatalog
+  url: errors/hacknotice-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/hacknotice-lifecycle.yml
+- type: Conformance
+  url: conformance/hacknotice-conformance.yml
+- type: DataModel
+  url: data-model/hacknotice-data-model.yml
+- type: Overlay
+  url: overlays/hacknotice-openapi-overlay.yaml
+- type: Webhooks
+  url: asyncapi/hacknotice-webhooks.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: LLMsTxt
+  url: llms/hacknotice-llms.txt
+x-enrichment:
+  date: '2026-08-22'
+  status: enriched
+  artifacts_added: 25
+  pass: local-v1

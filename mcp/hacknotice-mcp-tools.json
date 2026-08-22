@@ -1,0 +1,3422 @@
+{
+  "tools": [
+    {
+      "name": "hacknotice_assessment_get_assessment_invite",
+      "title": "Get Assessment Invite",
+      "description": "GET /assessments/invited/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_update_assessment_invite",
+      "title": "Update Assessment Invite",
+      "description": "PUT /assessments/invited/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          },
+          "requestBody": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Required JSON request body."
+          }
+        },
+        "required": [
+          "documentId",
+          "requestBody"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_list_assessments_page",
+      "title": "List Assessments (Page)",
+      "description": "POST /assessments/page/:pageNum\n\nList vendor assessments for the authenticated customer. When the user asks about a specific vendor or company (e.g. \"Discover\", \"what was their score\"), ALWAYS pass term with that vendor name \u2014 never call with an empty filter.\n\nWorkflow: list with term \u2192 pick latest assessment (sortBy timestamp, sortOrder desc) \u2192 getAssessment with documentId for score and custom_questions.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "pageNumber": {
+            "default": 0,
+            "description": "Zero-based page index.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "term": {
+            "description": "Vendor or company name filter (case-insensitive). REQUIRED when the user names a specific vendor (e.g. \"discover\", \"Acme Corp\"). Sent as API body.term \u2014 matches assessment name and description.",
+            "type": "string",
+            "minLength": 1
+          },
+          "companyId": {
+            "description": "Filter by company_id when known (e.g. from watchlist lookup).",
+            "type": "string"
+          },
+          "status": {
+            "description": "Filter by assessment status.",
+            "type": "string",
+            "enum": [
+              "not_started",
+              "in_progress",
+              "complete",
+              "overdue"
+            ]
+          },
+          "sortBy": {
+            "description": "Sort field. Use timestamp (default) for latest assessment; score for highest/lowest scored.",
+            "type": "string",
+            "enum": [
+              "score",
+              "timestamp"
+            ]
+          },
+          "sortOrder": {
+            "description": "Sort direction. Use desc for latest/highest score.",
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          },
+          "scoreExists": {
+            "description": "When true, return only assessments that have a score.",
+            "type": "boolean"
+          },
+          "scoreLessThanOrEqual": {
+            "description": "Only return assessments with a score \u2264 this value (inclusive). E.g. for \"score less than 70\" pass 69. Assessments with no score are always excluded.",
+            "type": "number"
+          },
+          "scoreGreaterThanOrEqual": {
+            "description": "Only return assessments with a score \u2265 this value (inclusive). Assessments with no score are always excluded.",
+            "type": "number"
+          },
+          "requestBody": {
+            "description": "Optional extra API body fields merged after explicit filters (e.g. template_ids).",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_count_assessments",
+      "title": "Count Assessments",
+      "description": "POST /assessments/count\n\nCount vendor assessments. When filtering by vendor/company name, pass the same term used for listAssessmentsPage (e.g. term: \"discover\").",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "term": {
+            "description": "Vendor or company name filter (case-insensitive). REQUIRED when the user names a specific vendor (e.g. \"discover\", \"Acme Corp\"). Sent as API body.term \u2014 matches assessment name and description.",
+            "type": "string",
+            "minLength": 1
+          },
+          "companyId": {
+            "description": "Filter by company_id when known (e.g. from watchlist lookup).",
+            "type": "string"
+          },
+          "status": {
+            "description": "Filter by assessment status.",
+            "type": "string",
+            "enum": [
+              "not_started",
+              "in_progress",
+              "complete",
+              "overdue"
+            ]
+          },
+          "sortBy": {
+            "description": "Sort field. Use timestamp (default) for latest assessment; score for highest/lowest scored.",
+            "type": "string",
+            "enum": [
+              "score",
+              "timestamp"
+            ]
+          },
+          "sortOrder": {
+            "description": "Sort direction. Use desc for latest/highest score.",
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          },
+          "scoreExists": {
+            "description": "When true, return only assessments that have a score.",
+            "type": "boolean"
+          },
+          "scoreLessThanOrEqual": {
+            "description": "Only return assessments with a score \u2264 this value (inclusive). E.g. for \"score less than 70\" pass 69. Assessments with no score are always excluded.",
+            "type": "number"
+          },
+          "scoreGreaterThanOrEqual": {
+            "description": "Only return assessments with a score \u2265 this value (inclusive). Assessments with no score are always excluded.",
+            "type": "number"
+          },
+          "requestBody": {
+            "description": "Optional extra API body fields merged after explicit filters (e.g. template_ids).",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_get_assessment",
+      "title": "Get Assessment",
+      "description": "GET /assessments/:docId\n\nGet a single assessment including score, status, custom_questions (per-question scores/answers), and company_id. Use after listAssessmentsPage to inspect lowest-scoring questions.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_projection_assessments",
+      "title": "Projection Assessments",
+      "description": "POST /assessments/projection",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "requestBody": {
+            "default": {},
+            "description": "Optional JSON request body.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_delete_assessment",
+      "title": "Delete Assessment",
+      "description": "DELETE /assessments/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_update_assessment",
+      "title": "Update Assessment",
+      "description": "PUT /assessments/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          },
+          "requestBody": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Required JSON request body."
+          }
+        },
+        "required": [
+          "documentId",
+          "requestBody"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_ai_score_assessment",
+      "title": "AI Score Assessment",
+      "description": "POST /assessments/ai-score/:docId\n\nAI-score a single completed assessment's answered questions (requires AI scoring enabled for the customer, assessment status in_progress/overdue, all questions answered, and not already scored). To score many unscored assessments at once, use hacknotice_assessment_ai_score_unscored instead of calling this per document.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_event_invited_list_events_page",
+      "title": "Invited - List Events (Page)",
+      "description": "POST /assessmentevents/invited/page/:pageNum",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "pageNumber": {
+            "default": 0,
+            "description": "Zero-based page index.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "requestBody": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Required JSON request body."
+          }
+        },
+        "required": [
+          "requestBody"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_event_invited_create_event",
+      "title": "Invited - Create Event",
+      "description": "POST /assessmentevents/invited",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "requestBody": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Required JSON request body."
+          }
+        },
+        "required": [
+          "requestBody"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_event_invited_get_event",
+      "title": "Invited - Get Event",
+      "description": "GET /assessmentevents/invited/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_event_invited_delete_event",
+      "title": "Invited - Delete Event",
+      "description": "DELETE /assessmentevents/invited/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_event_invited_update_event",
+      "title": "Invited - Update Event",
+      "description": "PUT /assessmentevents/invited/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          },
+          "requestBody": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Required JSON request body."
+          }
+        },
+        "required": [
+          "documentId",
+          "requestBody"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_event_list_events_page",
+      "title": "List Events (Page)",
+      "description": "POST /assessmentevents/page/:pageNum",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "pageNumber": {
+            "default": 0,
+            "description": "Zero-based page index.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "requestBody": {
+            "default": {},
+            "description": "Optional JSON request body.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_event_count_events",
+      "title": "Count Events",
+      "description": "POST /assessmentevents/count",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "requestBody": {
+            "default": {},
+            "description": "Optional JSON request body.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_event_create_event",
+      "title": "Create Event",
+      "description": "POST /assessmentevents",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "requestBody": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Required JSON request body."
+          }
+        },
+        "required": [
+          "requestBody"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_event_get_event",
+      "title": "Get Event",
+      "description": "GET /assessmentevents/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_event_delete_event",
+      "title": "Delete Event",
+      "description": "DELETE /assessmentevents/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_event_update_event",
+      "title": "Update Event",
+      "description": "PUT /assessmentevents/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          },
+          "requestBody": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Required JSON request body."
+          }
+        },
+        "required": [
+          "documentId",
+          "requestBody"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_template_list_templates_page",
+      "title": "List Templates (Page)",
+      "description": "POST /assessmenttemplates/page/:pageNum",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "pageNumber": {
+            "default": 0,
+            "description": "Zero-based page index.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "requestBody": {
+            "default": {},
+            "description": "Optional JSON request body.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_template_list_template_frameworks",
+      "title": "List Template Frameworks",
+      "description": "GET /assessmenttemplates/frameworks",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_template_count_templates",
+      "title": "Count Templates",
+      "description": "POST /assessmenttemplates/count",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "requestBody": {
+            "default": {},
+            "description": "Optional JSON request body.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_template_create_template",
+      "title": "Create Template",
+      "description": "POST /assessmenttemplates",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "requestBody": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Required JSON request body."
+          }
+        },
+        "required": [
+          "requestBody"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_template_get_template",
+      "title": "Get Template",
+      "description": "GET /assessmenttemplates/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_template_delete_template",
+      "title": "Delete Template",
+      "description": "DELETE /assessmenttemplates/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_template_update_template",
+      "title": "Update Template",
+      "description": "PUT /assessmenttemplates/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          },
+          "requestBody": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Required JSON request body."
+          }
+        },
+        "required": [
+          "documentId",
+          "requestBody"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_preference_create_preferences",
+      "title": "Create Preferences",
+      "description": "POST /assessmentpreferences",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "requestBody": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Required JSON request body."
+          }
+        },
+        "required": [
+          "requestBody"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_preference_get_preferences",
+      "title": "Get Preferences",
+      "description": "GET /assessmentpreferences",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_preference_delete_preferences",
+      "title": "Delete Preferences",
+      "description": "DELETE /assessmentpreferences",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_preference_update_preferences",
+      "title": "Update Preferences",
+      "description": "PUT /assessmentpreferences",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "requestBody": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Required JSON request body."
+          }
+        },
+        "required": [
+          "requestBody"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_invite_list_invites_page",
+      "title": "List Invites (Page)",
+      "description": "POST /assessmentinvites/page/:pageNum",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "pageNumber": {
+            "default": 0,
+            "description": "Zero-based page index.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "requestBody": {
+            "default": {},
+            "description": "Optional JSON request body.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_invite_count_invites",
+      "title": "Count Invites",
+      "description": "POST /assessmentinvites/count",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "requestBody": {
+            "default": {},
+            "description": "Optional JSON request body.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_invite_create_invite",
+      "title": "Create Invite",
+      "description": "POST /assessmentinvites",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "requestBody": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Required JSON request body."
+          }
+        },
+        "required": [
+          "requestBody"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_invite_get_invite",
+      "title": "Get Invite",
+      "description": "GET /assessmentinvites/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_invite_list_my_invites",
+      "title": "List My Invites",
+      "description": "GET /assessmentinvites/mine",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_invite_get_invite_by_code",
+      "title": "Get Invite by Code",
+      "description": "GET /assessmentinvites/code/:inviteCode",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "inviteCode": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Assessment invite code used in the URL path."
+          }
+        },
+        "required": [
+          "inviteCode"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_invite_activate_invite",
+      "title": "Activate Invite",
+      "description": "POST /assessmentinvites/activate/:inviteCode",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "inviteCode": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Assessment invite code used in the URL path."
+          }
+        },
+        "required": [
+          "inviteCode"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_invite_delete_invite",
+      "title": "Delete Invite",
+      "description": "DELETE /assessmentinvites/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_invite_update_invite",
+      "title": "Update Invite",
+      "description": "PUT /assessmentinvites/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          },
+          "requestBody": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Required JSON request body."
+          }
+        },
+        "required": [
+          "documentId",
+          "requestBody"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_data_file_list_files_page",
+      "title": "List Files (Page)",
+      "description": "POST /assessmentdatafiles/page/:pageNum",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "pageNumber": {
+            "default": 0,
+            "description": "Zero-based page index.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "requestBody": {
+            "default": {},
+            "description": "Optional JSON request body.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_data_file_count_files",
+      "title": "Count Files",
+      "description": "POST /assessmentdatafiles/count",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "requestBody": {
+            "default": {},
+            "description": "Optional JSON request body.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_data_file_get_file",
+      "title": "Get File Metadata",
+      "description": "GET /assessmentdatafiles/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_data_file_update_file",
+      "title": "Update File Metadata",
+      "description": "PUT /assessmentdatafiles/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          },
+          "requestBody": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Required JSON request body."
+          }
+        },
+        "required": [
+          "documentId",
+          "requestBody"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_data_file_download_file",
+      "title": "Download File",
+      "description": "GET /assessmentdatafiles/download/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_data_file_delete_file",
+      "title": "Delete File",
+      "description": "DELETE /assessmentdatafiles/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_invited_assessment_data_file_upload_invited_file",
+      "title": "Upload File (Invited)",
+      "description": "POST /assessmentdatafiles/invited",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "assessmentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Assessment ID sent as multipart field `assessment_id`."
+          },
+          "fileBase64": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Base64-encoded file content sent as multipart field `data`."
+          },
+          "fileName": {
+            "default": "upload.bin",
+            "description": "Uploaded file name.",
+            "type": "string",
+            "minLength": 1
+          },
+          "mimeType": {
+            "default": "application/octet-stream",
+            "description": "Uploaded file MIME type.",
+            "type": "string",
+            "minLength": 1
+          },
+          "filename": {
+            "description": "Optional `filename` multipart field.",
+            "type": "string"
+          },
+          "note": {
+            "description": "Optional `note` multipart field.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "assessmentId",
+          "fileBase64"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_invited_assessment_data_file_list_invited_files_page",
+      "title": "List Files (Page, Invited)",
+      "description": "POST /assessmentdatafiles/invited/page/:pageNum",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "pageNumber": {
+            "default": 0,
+            "description": "Zero-based page index.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "requestBody": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Required JSON request body."
+          }
+        },
+        "required": [
+          "requestBody"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_invited_assessment_data_file_count_invited_files",
+      "title": "Count Files (Invited)",
+      "description": "POST /assessmentdatafiles/invited/count",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "requestBody": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Required JSON request body."
+          }
+        },
+        "required": [
+          "requestBody"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_invited_assessment_data_file_get_invited_file",
+      "title": "Get File Metadata (Invited)",
+      "description": "GET /assessmentdatafiles/invited/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_invited_assessment_data_file_download_invited_file",
+      "title": "Download File (Invited)",
+      "description": "GET /assessmentdatafiles/invited/download/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_invited_assessment_data_file_delete_invited_file",
+      "title": "Delete File (Invited)",
+      "description": "DELETE /assessmentdatafiles/invited/:docId",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Document ID used in the URL path."
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_search",
+      "title": "Search Assessments",
+      "description": "POST /assessments/page across as many API pages as needed (50 rows/page) to return up to `limit` assessments in one call, with hasMore when more exist. Default limit 100, max 1000. Prefer this over hacknotice_assessment_list_assessments_page for broad questions across many vendors, e.g. \"which vendors have an overdue assessment\" (status: \"overdue\") or \"which assessments score under 70\" (scoreLessThanOrEqual: 69) \u2014 it removes the need to page through results or loop per company_id yourself. Still pass term when the user names one specific vendor.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "term": {
+            "description": "Vendor or company name filter (case-insensitive). REQUIRED when the user names a specific vendor (e.g. \"discover\", \"Acme Corp\"). Sent as API body.term \u2014 matches assessment name and description.",
+            "type": "string",
+            "minLength": 1
+          },
+          "companyId": {
+            "description": "Filter by company_id when known (e.g. from watchlist lookup).",
+            "type": "string"
+          },
+          "status": {
+            "description": "Filter by assessment status.",
+            "type": "string",
+            "enum": [
+              "not_started",
+              "in_progress",
+              "complete",
+              "overdue"
+            ]
+          },
+          "sortBy": {
+            "description": "Sort field. Use timestamp (default) for latest assessment; score for highest/lowest scored.",
+            "type": "string",
+            "enum": [
+              "score",
+              "timestamp"
+            ]
+          },
+          "sortOrder": {
+            "description": "Sort direction. Use desc for latest/highest score.",
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          },
+          "scoreExists": {
+            "description": "When true, return only assessments that have a score.",
+            "type": "boolean"
+          },
+          "scoreLessThanOrEqual": {
+            "description": "Only return assessments with a score \u2264 this value (inclusive). E.g. for \"score less than 70\" pass 69. Assessments with no score are always excluded.",
+            "type": "number"
+          },
+          "scoreGreaterThanOrEqual": {
+            "description": "Only return assessments with a score \u2265 this value (inclusive). Assessments with no score are always excluded.",
+            "type": "number"
+          },
+          "requestBody": {
+            "description": "Optional extra API body fields merged after explicit filters (e.g. template_ids).",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "limit": {
+            "default": 100,
+            "description": "Number of assessments to return, auto-paginating across API pages as needed. Omit for default 100. Max 1000. Response includes hasMore when more rows exist on the API.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_vendors_without_assessment",
+      "title": "Vendors Without Assessment",
+      "description": "POST /assessments/vendors-without-assessment. Returns watchlist vendors that have never had an assessment created at all (zero documents), answering \"which vendors have never been sent an assessment\" in one call \u2014 no need to fetch the full watchlist and assessment list and diff them yourself. Unpaginated; response is capped and includes `truncated: true` if the watchlist is larger than the cap.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "active": {
+            "description": "When set, only consider watchlist items with this active flag.",
+            "type": "boolean"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_assessment_ai_score_unscored",
+      "title": "AI Score Unscored Assessments",
+      "description": "Loops POST /assessments/ai-score-bulk (small server-side batches) until either every eligible unscored assessment has been processed, `maxDocs` is reached, or a safety cap of iterations is hit \u2014 answering \"AI-score any completed assessments that have not yet been scored\" in one tool call instead of one call per assessment. Requires AI scoring enabled for the customer. Skipped assessments (e.g. unanswered questions) are reported but not retried within this call.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          },
+          "maxDocs": {
+            "default": 100,
+            "description": "Stop once this many assessments have been AI-scored in this call. Default 100, max 500.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          }
+        }
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_third_party_watchlist_get_watchlist_domains",
+      "title": "Get Watchlist Domains",
+      "description": "POST /hackwatchlist/page across as many API pages as needed (50 rows/page) to return up to `limit` third-party watchlist vendors in one call, with hasMore when more exist. Default limit 100, max 1000 \u2014 omitting limit no longer requires you to page through the whole watchlist manually. Each returned vendor includes a computed `concernLevel` (low/medium/high/critical, derived from ransomwarethreatfactor: >15 critical, >5 high, >1 medium, else low \u2014 matches the Watchlist UI coloring). Use `sort: \"ransomwarethreatfactor\"` to surface the highest-risk vendors first, and `concernLevel` to keep only vendors at specific bucket(s), e.g. for \"which vendors have a critical concern level\".",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "sort": {
+            "description": "Sort order for third-party watchlist domains. alphadomain/alphaname sort alphabetically; threatfactor/ransomwarethreatfactor sort by that factor descending (highest risk first). DEFAULT (omit) = alphadomain, unless `concernLevel` is set, in which case it defaults to ransomwarethreatfactor.",
+            "type": "string",
+            "enum": [
+              "alphadomain",
+              "alphaname",
+              "threatfactor",
+              "ransomwarethreatfactor"
+            ]
+          },
+          "concernLevel": {
+            "description": "Only return vendors whose computed Concern Level matches one of these values, e.g. [\"critical\"] for \"vendors with a critical concern level\". Filtering happens after fetching, on the same sorted window `limit` bounds \u2014 if `hasMore` is still true after filtering, raise `limit` to see more.",
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                "critical"
+              ]
+            }
+          },
+          "limit": {
+            "default": 100,
+            "description": "Number of watchlist domains to return, auto-paginating across API pages as needed. Omit for default 100. Max 1000. Response includes hasMore when more rows exist on the API.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_third_party_watchlist_search_domain",
+      "title": "Search Domain",
+      "description": "POST /hackwatchlist/search with form field `term`.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Domain to search for in the third-party watchlist."
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_third_party_watchlist_get_by_id",
+      "title": "Get Third-Party Watchlist Item by ID",
+      "description": "GET /hackwatchlist/:watchlistId.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "watchlistId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Third-party watchlist document ID."
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "watchlistId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_third_party_watchlist_update_by_id",
+      "title": "Update Third-Party Watchlist Item by ID",
+      "description": "PUT /hackwatchlist/:watchlistId with JSON body `{ \"tags\": [...] }`.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "watchlistId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Third-party watchlist document ID."
+          },
+          "tags": {
+            "default": [],
+            "description": "Tags array to set on the watchlist item.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "watchlistId"
+        ]
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_first_party_watchlist_get_watchlist_items",
+      "title": "Get First-Party Watchlist Items",
+      "description": "POST /domainwatchlist/page/:pageNumber with a JSON request body.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "default": 0,
+            "description": "Zero-based page index.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "requestBody": {
+            "default": {
+              "sort": "count"
+            },
+            "description": "JSON body sent to the watchlist items endpoint.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_first_party_watchlist_search_item",
+      "title": "Search First-Party Watchlist Item",
+      "description": "POST /domainwatchlist/search with JSON body containing `term` plus optional search options.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Domain to search for in the first-party watchlist."
+          },
+          "searchOptions": {
+            "default": {},
+            "description": "Optional extra JSON search fields.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_first_party_watchlist_get_by_id",
+      "title": "Get First-Party Watchlist Item by ID",
+      "description": "GET /domainwatchlist/:watchlistId.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "watchlistId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "First-party watchlist document ID."
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "watchlistId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_end_user_watchlist_get_many",
+      "title": "Get End User Watchlist Items",
+      "description": "GET /enduserwatchlist/page/:pageNumber.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "default": 0,
+            "description": "Zero-based page index.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_end_user_watchlist_search_for_email",
+      "title": "Search End User Watchlist for Email",
+      "description": "POST /enduserwatchlist/search with form field `term`.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "emailOrHash": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Email address or hash to search for."
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "emailOrHash"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_end_user_watchlist_add_item_to_watchlist",
+      "title": "Add End User Watchlist Item",
+      "description": "POST /enduserwatchlist/create with JSON body containing email, tags, and optional hashed flag.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "emailOrHash": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Email address or hash to add."
+          },
+          "tags": {
+            "default": [],
+            "description": "Optional tags array sent when adding the item.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hashed": {
+            "default": false,
+            "description": "Whether the emailOrHash value is already hashed.",
+            "type": "boolean"
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "emailOrHash"
+        ]
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_end_user_watchlist_get_by_id",
+      "title": "Get End User Watchlist Item by ID",
+      "description": "GET /enduserwatchlist/:watchlistId.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "watchlistId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "End user watchlist document ID."
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "watchlistId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_end_user_watchlist_delete_by_id",
+      "title": "Delete End User Watchlist Item by ID",
+      "description": "DELETE /enduserwatchlist/:watchlistId.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "watchlistId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "End user watchlist document ID."
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "watchlistId"
+        ]
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_global_breaches",
+      "title": "Search global breach incidents",
+      "description": "PURPOSE: Search HackNotice's curated global breach database for published hack/ransomware/data-breach incidents by domain or company name.\n\nUSE WHEN: User asks about a ransomware attack, data breach, hack incident, or \"what happened to {company/domain}\"; needs published breach details plus HackNotice workflow next steps.\n\nDO NOT USE WHEN: User wants forum/dark-web chatter (use search_chatter); structured leak/credential records (use search_exposure or search_credential_leaks); watchlist-specific alerts only (use hacknotice_third_party_alerts).\n\nREQUIRES: Customer flag unlimitedthirdpartyaccess for search.\n\nOUTPUT: breaches, watchlist status, recommendations.workflowActions (next steps you can run as tools) and recommendations.guidance (next steps the user must do in the HackNotice app; no tool exists for them). Both are empty when the search returns no breaches.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "term": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Domain or company name to search in the global breach database (e.g. destinlegal.com)."
+          },
+          "sourcetype": {
+            "description": "Optional sourcetype filter (e.g. ransomware).",
+            "type": "string"
+          },
+          "startDate": {
+            "description": "Optional ISO 8601 start bound on published_date (maps to start_date).",
+            "type": "string"
+          },
+          "endDate": {
+            "description": "Optional ISO 8601 end bound on published_date (maps to end_date).",
+            "type": "string"
+          },
+          "sort": {
+            "description": "Optional sort by severity descending.",
+            "type": "string",
+            "enum": [
+              "severity"
+            ]
+          },
+          "limit": {
+            "default": 25,
+            "description": "Number of breach records to return (default 25; API returns up to 50 per page).",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "term"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_verify_credentials",
+      "title": "Verify HackNotice credentials",
+      "description": "Calls POST /auth/verify using the configured API key and JWT. Use to confirm env vars are valid.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_list_saved_searches",
+      "title": "List saved searches",
+      "description": "Lists saved searches from the HackNotice API. Call this before alert tools when the user references a saved search by name or order (e.g. \"first saved search\"). Returns id, name, and savedSearchJson tokens for follow-up alert calls.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "thirdParty",
+              "firstParty",
+              "endUser",
+              "researchPhrase",
+              "researchWordpool"
+            ],
+            "description": "Which saved-search endpoint to call."
+          },
+          "limit": {
+            "default": 100,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_third_party_alerts",
+      "title": "Third-party hack alerts",
+      "description": "POST /hackalerts/page with saved-search JSON, time range, and typed filters (sourcetype, sort, tier, tag, harvester, remediated, topNaicsCode(s), region(s), companyFilter, showUpdatedBreachOnly \u2014 the fields prod-api accepts on this endpoint). Returns up to `limit` alerts (default 100) with `hasMore` when additional API pages exist. Returns full, uncompacted records by default \u2014 pass compact or fields to shrink the response.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "savedSearchJson": {
+            "description": "Saved-search token or JSON from hacknotice_list_saved_searches (same kind as the alert tool). When the user names a saved search, call list_saved_searches first, then pass savedSearchJson from one entry.",
+            "type": "string"
+          },
+          "sourcetype": {
+            "description": "Filter by breach source type (maps to sourcetype).",
+            "type": "string"
+          },
+          "sort": {
+            "description": "Sort order: alphabetically (by domain), timestamp, or severity. Defaults to published_date descending.",
+            "type": "string",
+            "enum": [
+              "alphabetically",
+              "timestamp",
+              "severity"
+            ]
+          },
+          "tier": {
+            "description": "Filter alerts by tier value (maps to tier).",
+            "type": "string"
+          },
+          "tag": {
+            "description": "Filter alerts by tag name (maps to tag).",
+            "type": "string"
+          },
+          "harvester": {
+            "description": "Filter by harvester/source name; matches either harvester or othersourcesharvester.",
+            "type": "string"
+          },
+          "remediated": {
+            "description": "Filter by remediated status (maps to remediated).",
+            "type": "boolean"
+          },
+          "topNaicsCode": {
+            "description": "Filter by a single NAICS industry code (maps to topnaicscode).",
+            "type": "string"
+          },
+          "topNaicsCodes": {
+            "description": "Filter by multiple NAICS industry codes (maps to topnaicscodearray).",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "region": {
+            "description": "Filter by a single region (maps to region).",
+            "type": "string"
+          },
+          "regions": {
+            "description": "Filter by multiple regions (maps to regionarray).",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "companyFilter": {
+            "description": "Case-insensitive substring match against company name, domain, or breach description (maps to company_filter). Applied to the fetched page only, after pagination.",
+            "type": "string"
+          },
+          "showUpdatedBreachOnly": {
+            "description": "Only include alerts whose linked breach has a lastUpdatedDate (maps to showUpdatedBreachOnly). Applied to the fetched page only, after pagination.",
+            "type": "boolean"
+          },
+          "timeRange": {
+            "type": "string",
+            "enum": [
+              "lastDay",
+              "lastWeek",
+              "lastMonth"
+            ],
+            "description": "Preset time window (ignored when startDate or endDate is set). DEFAULT (omit this, startDate/endDate, and hoursAgo) = no time filter \u2014 first page of all-time results, most recent first. Only set a window when the user actually names one (e.g. \"today\", \"this week\", \"since March\"); do not add one just to narrow a broad or vague request."
+          },
+          "startDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "endDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "hoursAgo": {
+            "description": "Rolling lookback (8\u201372 hours, maps to hours_ago). Use startDate/endDate for longer ranges. Overrides timeRange. DEFAULT (omit this, startDate/endDate, and timeRange) = no time filter \u2014 returns the first page of all-time results, most recent first.",
+            "type": "integer",
+            "minimum": 8,
+            "maximum": 72
+          },
+          "limit": {
+            "default": 25,
+            "description": "Number of results to return. Omit for default 25. Max 1000. Response includes hasMore when more rows exist on the API.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "compact": {
+            "description": "Return a fixed summary shape (id, name, hit_value, timestamps, domain/email/ip, severity, sourcetype, passwordType, filename, remediated, matches) instead of the full record. DEFAULT (omit) = false \u2014 full records are returned. Set true to shrink large responses when you only need the summary fields.",
+            "type": "boolean"
+          },
+          "fields": {
+            "description": "Return only these top-level field names from each alert record. Overrides `compact` when set \u2014 use this to trim heavy fields (like leak text) while keeping the specific ones you need.",
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_first_party_alerts",
+      "title": "First-party domain alerts",
+      "description": "POST /domainalerts/page with saved-search JSON, time range, and typed filters (redactPassword, infostealer, credentialDump, creds, passwordLength, passwordCriteria, aiflag, tag, tier, unmatchTier \u2014 the fields prod-api accepts on this endpoint). When the user asks for a saved search by name or position (e.g. \"first saved search\"), you MUST call hacknotice_list_saved_searches with kind firstParty first, then pass savedSearchJson from the chosen entry. Returns full, uncompacted alert records (including leakDoc blobs) by default \u2014 pass compact or fields to shrink the response, or lower limit if it gets too large. Default limit 25.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "savedSearchJson": {
+            "description": "Saved-search token or JSON from hacknotice_list_saved_searches (same kind as the alert tool). When the user names a saved search, call list_saved_searches first, then pass savedSearchJson from one entry.",
+            "type": "string"
+          },
+          "redactPassword": {
+            "description": "Mask password values in leak documents (maps to redact_password).",
+            "type": "boolean"
+          },
+          "infostealer": {
+            "description": "Only include alerts flagged as infostealer log matches (maps to infostealer).",
+            "type": "boolean"
+          },
+          "credentialDump": {
+            "description": "Only include alerts flagged as credential dumps (maps to credentialdump).",
+            "type": "boolean"
+          },
+          "creds": {
+            "description": "Include extracted email/password credential fields in the response (maps to creds).",
+            "type": "boolean"
+          },
+          "passwordLength": {
+            "description": "Minimum password length filter (maps to password_length).",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "passwordCriteria": {
+            "description": "Password complexity filter (maps to password_criteria).",
+            "type": "string",
+            "enum": [
+              "alpha",
+              "alphanumeric",
+              "upper_lower_alphanumeric",
+              "alphanumeric_special",
+              "upper_lower_aplhanumeric_special"
+            ]
+          },
+          "aiflag": {
+            "description": "Marks the call as UI-driven to avoid re-triggering AI tagging on the returned alerts (maps to aiflag).",
+            "type": "boolean"
+          },
+          "tag": {
+            "description": "Filter alerts by tag name (maps to tag).",
+            "type": "string"
+          },
+          "tier": {
+            "description": "Filter alerts by tier value (maps to tier).",
+            "type": "string"
+          },
+          "unmatchTier": {
+            "description": "When true with tier set, match alerts whose tier does NOT equal tier (tierattempted) instead of matching it (maps to unmatchTier).",
+            "type": "boolean"
+          },
+          "timeRange": {
+            "type": "string",
+            "enum": [
+              "lastDay",
+              "lastWeek",
+              "lastMonth"
+            ],
+            "description": "Preset time window (ignored when startDate or endDate is set). DEFAULT (omit this, startDate/endDate, and hoursAgo) = no time filter \u2014 first page of all-time results, most recent first. Only set a window when the user actually names one (e.g. \"today\", \"this week\", \"since March\"); do not add one just to narrow a broad or vague request."
+          },
+          "startDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "endDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "hoursAgo": {
+            "description": "Rolling lookback (8\u201372 hours, maps to hours_ago). Use startDate/endDate for longer ranges. Overrides timeRange. DEFAULT (omit this, startDate/endDate, and timeRange) = no time filter \u2014 returns the first page of all-time results, most recent first.",
+            "type": "integer",
+            "minimum": 8,
+            "maximum": 72
+          },
+          "limit": {
+            "default": 25,
+            "description": "Number of results to return. Omit for default 25. Max 1000. Response includes hasMore when more rows exist on the API.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "compact": {
+            "description": "Return a fixed summary shape (id, name, hit_value, timestamps, domain/email/ip, severity, sourcetype, passwordType, filename, remediated, matches) instead of the full record. DEFAULT (omit) = false \u2014 full records are returned. Set true to shrink large responses when you only need the summary fields.",
+            "type": "boolean"
+          },
+          "fields": {
+            "description": "Return only these top-level field names from each alert record. Overrides `compact` when set \u2014 use this to trim heavy fields (like leak text) while keeping the specific ones you need.",
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_end_user_alerts",
+      "title": "End-user alerts",
+      "description": "POST /enduseralerts/page with saved-search JSON, time range, and typed filters (term, tier, tag, remediated, infostealer, credentialDump, taggroup, hashpass, sort, creds \u2014 the fields prod-api accepts on this endpoint). Returns up to `limit` alerts (default 100) with `hasMore` when additional API pages exist. Returns full, uncompacted records by default \u2014 pass compact or fields to shrink the response.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "savedSearchJson": {
+            "description": "Saved-search token or JSON from hacknotice_list_saved_searches (same kind as the alert tool). When the user names a saved search, call list_saved_searches first, then pass savedSearchJson from one entry.",
+            "type": "string"
+          },
+          "term": {
+            "description": "Filter alerts by end-user email address, exact match (maps to term).",
+            "type": "string"
+          },
+          "tier": {
+            "description": "Filter alerts by tier value (maps to tier).",
+            "type": "string"
+          },
+          "tag": {
+            "description": "Filter alerts by tag name (maps to tag).",
+            "type": "string"
+          },
+          "remediated": {
+            "description": "Filter by remediated status (maps to remediated).",
+            "type": "boolean"
+          },
+          "infostealer": {
+            "description": "Only include alerts flagged as infostealer log matches (maps to infostealer).",
+            "type": "boolean"
+          },
+          "credentialDump": {
+            "description": "Only include alerts flagged as credential dumps (maps to credentialdump).",
+            "type": "boolean"
+          },
+          "taggroup": {
+            "description": "Filter by analytics tag group (maps to taggroup).",
+            "type": "string",
+            "enum": [
+              "business",
+              "financial",
+              "passwords",
+              "pii"
+            ]
+          },
+          "hashpass": {
+            "description": "Only include alerts sourced from processed dark-web password hashes (maps to hashpass).",
+            "type": "boolean"
+          },
+          "sort": {
+            "description": "Sort by timestamp descending instead of the default published_date descending (maps to sort).",
+            "type": "string",
+            "enum": [
+              "timestamp"
+            ]
+          },
+          "creds": {
+            "description": "Include extracted email/password credential fields in the response (maps to creds).",
+            "type": "boolean"
+          },
+          "timeRange": {
+            "type": "string",
+            "enum": [
+              "lastDay",
+              "lastWeek",
+              "lastMonth"
+            ],
+            "description": "Preset time window (ignored when startDate or endDate is set). DEFAULT (omit this, startDate/endDate, and hoursAgo) = no time filter \u2014 first page of all-time results, most recent first. Only set a window when the user actually names one (e.g. \"today\", \"this week\", \"since March\"); do not add one just to narrow a broad or vague request."
+          },
+          "startDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "endDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "hoursAgo": {
+            "description": "Rolling lookback (8\u201372 hours, maps to hours_ago). Use startDate/endDate for longer ranges. Overrides timeRange. DEFAULT (omit this, startDate/endDate, and timeRange) = no time filter \u2014 returns the first page of all-time results, most recent first.",
+            "type": "integer",
+            "minimum": 8,
+            "maximum": 72
+          },
+          "limit": {
+            "default": 25,
+            "description": "Number of results to return. Omit for default 25. Max 1000. Response includes hasMore when more rows exist on the API.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "compact": {
+            "description": "Return a fixed summary shape (id, name, hit_value, timestamps, domain/email/ip, severity, sourcetype, passwordType, filename, remediated, matches) instead of the full record. DEFAULT (omit) = false \u2014 full records are returned. Set true to shrink large responses when you only need the summary fields.",
+            "type": "boolean"
+          },
+          "fields": {
+            "description": "Return only these top-level field names from each alert record. Overrides `compact` when set \u2014 use this to trim heavy fields (like leak text) while keeping the specific ones you need.",
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_research_phrase_alerts",
+      "title": "Research phrase alerts",
+      "description": "POST research phrase endpoints (/researchtraffic/search/term/page, filename variant via endpoint=\"filename\"). Accepts term/searchtype/domainFilter/order/creds/credsOnly/fullRecords/redacted directly, or researchSavedSearchJson \u2014 the fields prod-api accepts on these endpoints. Returns full, uncompacted records (including plaintext passwords and full leak text) by default \u2014 lower limit if the response gets too large.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "researchSavedSearchJson": {
+            "description": "JSON from saved searches (id, endpoint, search) or raw search object \u2014 same as n8n research fields. Optional when term is passed directly; typed fields below override values from this JSON.",
+            "type": "string"
+          },
+          "term": {
+            "description": "Search term/phrase to match, for ad-hoc queries without a saved search (maps to term).",
+            "type": "string"
+          },
+          "searchtype": {
+            "description": "How the query term is matched against leak text. DEFAULT (omit) = 'wildcard_both' \u2014 contains/substring match (recommended). Use 'match_phrase' when the user says 'exact match', 'match exactly', or 'match exact' (exact phrase, no wildcards). Use 'wildcard_pre' when the user says 'include prefix' / 'include prefixes', or 'match domain...' \u2014 matches text that ENDS with the term, i.e. any prefix is allowed before it (e.g., emails ending in @domain.com). Use 'wildcard_post' when the user says 'include suffix' / 'include suffixes' \u2014 matches text that STARTS with the term, i.e. any suffix is allowed after it.",
+            "type": "string",
+            "enum": [
+              "wildcard_both",
+              "wildcard_pre",
+              "wildcard_post",
+              "match_phrase"
+            ]
+          },
+          "endpoint": {
+            "description": "Which research index to query: \"term\" searches leak text (default), \"filename\" searches the leaked-filename index instead. Overrides the endpoint recorded in researchSavedSearchJson when set.",
+            "type": "string",
+            "enum": [
+              "term",
+              "filename"
+            ]
+          },
+          "domainFilter": {
+            "description": "Apply a stricter client-side boundary check against term, discarding loose substring hits (term endpoint only; maps to domainfilter).",
+            "type": "boolean"
+          },
+          "order": {
+            "description": "Sort direction (maps to order). Omit to use the backend default: desc for term/pool search, asc for the filename-index search.",
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          },
+          "creds": {
+            "description": "Include extracted email/password credential fields in the response (maps to creds). DEFAULT (omit) = true \u2014 pass false to exclude credential fields.",
+            "type": "boolean"
+          },
+          "credsOnly": {
+            "description": "Return only results carrying credential fields (maps to credsonly).",
+            "type": "boolean"
+          },
+          "fullRecords": {
+            "description": "Return full, untruncated leak text instead of the 1000-character preview (maps to fullrecords). DEFAULT (omit) = true \u2014 pass false to get the truncated preview.",
+            "type": "boolean"
+          },
+          "redacted": {
+            "description": "Force redaction of matched values in the returned text, even if the account default is unredacted (maps to redacted).",
+            "type": "boolean"
+          },
+          "timeRange": {
+            "type": "string",
+            "enum": [
+              "lastDay",
+              "lastWeek",
+              "lastMonth"
+            ],
+            "description": "Preset time window (ignored when startDate or endDate is set). DEFAULT (omit this, startDate/endDate, and hoursAgo) = no time filter \u2014 first page of all-time results, most recent first. Only set a window when the user actually names one (e.g. \"today\", \"this week\", \"since March\"); do not add one just to narrow a broad or vague request."
+          },
+          "startDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "endDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "hoursAgo": {
+            "description": "Rolling lookback (8\u201372 hours, maps to hours_ago). Use startDate/endDate for longer ranges. Overrides timeRange. DEFAULT (omit this, startDate/endDate, and timeRange) = no time filter \u2014 returns the first page of all-time results, most recent first.",
+            "type": "integer",
+            "minimum": 8,
+            "maximum": 72
+          },
+          "limit": {
+            "default": 25,
+            "description": "Number of results to return. Omit for default 25. Max 1000. Response includes hasMore when more rows exist on the API.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "compact": {
+            "description": "Return a fixed summary shape (id, name, hit_value, timestamps, domain/email/ip, severity, sourcetype, passwordType, filename, remediated, matches) instead of the full record. DEFAULT (omit) = false \u2014 full records are returned. Set true to shrink large responses when you only need the summary fields.",
+            "type": "boolean"
+          },
+          "fields": {
+            "description": "Return only these top-level field names from each alert record. Overrides `compact` when set \u2014 use this to trim heavy fields (like leak text) while keeping the specific ones you need.",
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "hacknotice_research_wordpool_alerts",
+      "title": "Research wordpool alerts",
+      "description": "POST /researchtraffic/search/pool/page for wordpool research \u2014 correlates 2+ terms with a minimum-match count. Accepts pool/match/order/creds/credsOnly/fullRecords/redacted directly, or researchSavedSearchJson \u2014 the fields prod-api accepts on this endpoint. DO NOT USE for a single IP, email, domain, or keyword (use hacknotice_research_phrase_alerts or search_exposure instead) \u2014 pool exists to correlate multiple related terms, e.g. a company name plus \"admin\" plus \"database\". Returns full, uncompacted records (including plaintext passwords and full leak text) by default \u2014 lower limit if the response gets too large.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "researchSavedSearchJson": {
+            "description": "JSON from saved searches (id, endpoint, search) or raw search object \u2014 same as n8n research fields. Optional when pool is passed directly; typed fields below override values from this JSON.",
+            "type": "string"
+          },
+          "pool": {
+            "description": "Terms to correlate, for ad-hoc queries without a saved search (maps to pool).",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "match": {
+            "description": "Minimum number of pool terms that must match; clamped to [1, pool.length] (maps to match).",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "order": {
+            "description": "Sort direction (maps to order). Omit to use the backend default: desc for term/pool search, asc for the filename-index search.",
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          },
+          "creds": {
+            "description": "Include extracted email/password credential fields in the response (maps to creds). DEFAULT (omit) = true \u2014 pass false to exclude credential fields.",
+            "type": "boolean"
+          },
+          "credsOnly": {
+            "description": "Return only results carrying credential fields (maps to credsonly).",
+            "type": "boolean"
+          },
+          "fullRecords": {
+            "description": "Return full, untruncated leak text instead of the 1000-character preview (maps to fullrecords). DEFAULT (omit) = true \u2014 pass false to get the truncated preview.",
+            "type": "boolean"
+          },
+          "redacted": {
+            "description": "Force redaction of matched values in the returned text, even if the account default is unredacted (maps to redacted).",
+            "type": "boolean"
+          },
+          "timeRange": {
+            "type": "string",
+            "enum": [
+              "lastDay",
+              "lastWeek",
+              "lastMonth"
+            ],
+            "description": "Preset time window (ignored when startDate or endDate is set). DEFAULT (omit this, startDate/endDate, and hoursAgo) = no time filter \u2014 first page of all-time results, most recent first. Only set a window when the user actually names one (e.g. \"today\", \"this week\", \"since March\"); do not add one just to narrow a broad or vague request."
+          },
+          "startDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "endDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "hoursAgo": {
+            "description": "Rolling lookback (8\u201372 hours, maps to hours_ago). Use startDate/endDate for longer ranges. Overrides timeRange. DEFAULT (omit this, startDate/endDate, and timeRange) = no time filter \u2014 returns the first page of all-time results, most recent first.",
+            "type": "integer",
+            "minimum": 8,
+            "maximum": 72
+          },
+          "limit": {
+            "default": 25,
+            "description": "Number of results to return. Omit for default 25. Max 1000. Response includes hasMore when more rows exist on the API.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "compact": {
+            "description": "Return a fixed summary shape (id, name, hit_value, timestamps, domain/email/ip, severity, sourcetype, passwordType, filename, remediated, matches) instead of the full record. DEFAULT (omit) = false \u2014 full records are returned. Set true to shrink large responses when you only need the summary fields.",
+            "type": "boolean"
+          },
+          "fields": {
+            "description": "Return only these top-level field names from each alert record. Overrides `compact` when set \u2014 use this to trim heavy fields (like leak text) while keeping the specific ones you need.",
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_exposure",
+      "title": "Search structured leak records (not chatter)",
+      "description": "PURPOSE: Search structured research leak records matching one indicator or keyword. This is NOT the chatter/forum search.\n\nUSE WHEN: User asks whether something appeared in leaked/breached DATA or structured leak records; single IP, email, domain, company name, or keyword; \"any new alerts\" or \"anything in the last X hours\" for a single term.\n\nDO NOT USE WHEN: User says chatter, breach chatter, leak chatter, quick read on chatter, forum, dark web, posts, discussions, conversations, \"what's out there\", or \"what people are saying\" (use search_chatter). DO NOT use for credentials/passwords (use search_credential_leaks), files/filenames/extensions (use search_leaked_files), or multi-keyword co-occurrence (use search_correlated_leaks).\n\nEXAMPLES: \"Structured leak records for IP 10.107.200.4\"; \"Research leak data mentioning Acme Corp in the last week\"; \"Leak-record hits for user@company.com today\".\n\nOUTPUT: JSON with results (array), count, summary, hasMore, and limit; pagination is handled server-side.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Company name, domain, email, or keyword to search"
+          },
+          "startDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "endDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "time_range_hours": {
+            "description": "Rolling lookback (8\u201372 hours). Ignored when startDate or endDate is set; use dates for longer ranges. DEFAULT (omit, along with startDate/endDate) = no time filter \u2014 returns the first page of all-time results, most recent first.",
+            "type": "integer",
+            "minimum": 8,
+            "maximum": 72
+          },
+          "searchtype": {
+            "description": "How the query term is matched against leak text. DEFAULT (omit) = 'wildcard_both' \u2014 contains/substring match (recommended). Use 'match_phrase' when the user says 'exact match', 'match exactly', or 'match exact' (exact phrase, no wildcards). Use 'wildcard_pre' when the user says 'include prefix' / 'include prefixes', or 'match domain...' \u2014 matches text that ENDS with the term, i.e. any prefix is allowed before it (e.g., emails ending in @domain.com). Use 'wildcard_post' when the user says 'include suffix' / 'include suffixes' \u2014 matches text that STARTS with the term, i.e. any suffix is allowed after it.",
+            "type": "string",
+            "enum": [
+              "wildcard_both",
+              "wildcard_pre",
+              "wildcard_post",
+              "match_phrase"
+            ]
+          },
+          "include_credentials": {
+            "default": false,
+            "description": "Whether to include credential data in results",
+            "type": "boolean"
+          },
+          "only_credentials": {
+            "default": false,
+            "description": "Return only credential leaks",
+            "type": "boolean"
+          },
+          "password_length": {
+            "description": "PASS THIS whenever the user mentions a minimum password length (e.g., \"at least 8 chars\", \"10+ characters\", \"length 12\"). Pass the integer directly (8, 10, 12, \u2026). Filters credential leaks to plaintext passwords meeting this minimum length.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64
+          },
+          "password_criteria": {
+            "description": "PASS THIS whenever the user mentions password complexity / character class (e.g., 'alphanumeric', 'alpha', 'with special chars'). Values: 'alpha' = letters only; 'alphanumeric' = letters+digits; 'alphanumeric_special' = letters+digits+special; 'upper_lower_alphanumeric' / 'upper_lower_aplhanumeric_special' require \u22652 of {digit, lowercase, uppercase[, special]}.",
+            "type": "string",
+            "enum": [
+              "alpha",
+              "alphanumeric",
+              "upper_lower_alphanumeric",
+              "alphanumeric_special",
+              "upper_lower_aplhanumeric_special"
+            ]
+          },
+          "limit": {
+            "default": 25,
+            "description": "Number of results to return. Omit for default 25. Max 1000. Response includes hasMore when more rows exist on the API.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_chatter",
+      "title": "Search breach/leak chatter and forum posts",
+      "description": "PURPOSE: Search breach/leak chatter with the chatter ES8 index: dark-web/forum posts, discussions, subjects, bodies, sources, authors, and dates.\n\nUSE WHEN: User mentions chatter, breach chatter, leak chatter, breach or leak chatter, forums, dark-web posts, discussions, conversations, threat actor posts, \"what's out there\", \"what people are saying\", or asks for a quick read and is \"not picky about the type\".\n\nDO NOT USE WHEN: User asks specifically for credential/password records (use search_credential_leaks); leaked files or filenames (use search_leaked_files); multi-keyword co-occurrence in leak records (use search_correlated_leaks).\n\nEXAMPLES: \"Has example.org shown up in any breach or leak chatter in the last day?\"; \"Any forum chatter about Acme this week?\"; \"Dark web posts mentioning mycompany.com\".\n\nOUTPUT: JSON with results, count, summary, hasMore, and limit.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Domain, company name, handle, or keyword to search in chatter posts"
+          },
+          "startDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "endDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "time_range_hours": {
+            "description": "Rolling lookback (8\u201372 hours). Ignored when startDate or endDate is set; use dates for longer ranges. DEFAULT (omit, along with startDate/endDate) = no time filter \u2014 returns the first page of all-time results, most recent first.",
+            "type": "integer",
+            "minimum": 8,
+            "maximum": 72
+          },
+          "searchtype": {
+            "description": "How the query term is matched against leak text. DEFAULT (omit) = 'wildcard_both' \u2014 contains/substring match (recommended). Use 'match_phrase' when the user says 'exact match', 'match exactly', or 'match exact' (exact phrase, no wildcards). Use 'wildcard_pre' when the user says 'include prefix' / 'include prefixes', or 'match domain...' \u2014 matches text that ENDS with the term, i.e. any prefix is allowed before it (e.g., emails ending in @domain.com). Use 'wildcard_post' when the user says 'include suffix' / 'include suffixes' \u2014 matches text that STARTS with the term, i.e. any suffix is allowed after it.",
+            "type": "string",
+            "enum": [
+              "wildcard_both",
+              "wildcard_pre",
+              "wildcard_post",
+              "match_phrase"
+            ]
+          },
+          "limit": {
+            "default": 25,
+            "description": "Number of results to return. Omit for default 25. Max 1000. Response includes hasMore when more rows exist on the API.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_credential_leaks",
+      "title": "Search credential leaks",
+      "description": "PURPOSE: Focused search for leaked credentials tied to a domain (emails, usernames, passwords, etc.).\n\nUSE WHEN: User asks for passwords, creds, logins, or \"credential leaks\" for a company domain; credential hunting for a hostname.\n\nDO NOT USE WHEN: User mentions chatter, breach chatter, leak chatter, forums, dark-web posts, discussions, or asks for a general quick read on what is out there (use search_chatter); user gives an IP, free-text keyword, or non-domain indicator (use search_exposure); user asks about file names or backups (use search_leaked_files); user lists several keywords that must appear together (use search_correlated_leaks).\n\nPASSWORD FILTERS: When the user constrains the password (e.g., \"at least 8 chars\", \"alphanumeric only\"), pass password_length and/or password_criteria. These are applied AFTER the raw query, so totalRawMatches reflects pre-filter count while count reflects what passed.\n\nEXAMPLES: \"Leaked passwords for mycompany.com\"; \"Any creds for contoso.com in the last 24 hours?\"; \"Alphanumeric passwords >=8 chars leaked from acme.com\".\n\nOUTPUT: JSON with results, count, summary, hasMore, and limit.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Domain or identifier (e.g., company.com)"
+          },
+          "startDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "endDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "time_range_hours": {
+            "description": "Rolling lookback (8\u201372 hours). Ignored when startDate or endDate is set; use dates for longer ranges. DEFAULT (omit, along with startDate/endDate) = no time filter \u2014 returns the first page of all-time results, most recent first.",
+            "type": "integer",
+            "minimum": 8,
+            "maximum": 72
+          },
+          "searchtype": {
+            "description": "How the query term is matched against leak text. DEFAULT (omit) = 'wildcard_both' \u2014 contains/substring match (recommended). Use 'match_phrase' when the user says 'exact match', 'match exactly', or 'match exact' (exact phrase, no wildcards). Use 'wildcard_pre' when the user says 'include prefix' / 'include prefixes', or 'match domain...' \u2014 matches text that ENDS with the term, i.e. any prefix is allowed before it (e.g., emails ending in @domain.com). Use 'wildcard_post' when the user says 'include suffix' / 'include suffixes' \u2014 matches text that STARTS with the term, i.e. any suffix is allowed after it.",
+            "type": "string",
+            "enum": [
+              "wildcard_both",
+              "wildcard_pre",
+              "wildcard_post",
+              "match_phrase"
+            ]
+          },
+          "password_length": {
+            "description": "PASS THIS whenever the user mentions a minimum password length (e.g., \"at least 8 chars\", \"10+ characters\", \"length 12\"). Pass the integer directly (8, 10, 12, \u2026). Filters credential leaks to plaintext passwords meeting this minimum length.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64
+          },
+          "password_criteria": {
+            "description": "PASS THIS whenever the user mentions password complexity / character class (e.g., 'alphanumeric', 'alpha', 'with special chars'). Values: 'alpha' = letters only; 'alphanumeric' = letters+digits; 'alphanumeric_special' = letters+digits+special; 'upper_lower_alphanumeric' / 'upper_lower_aplhanumeric_special' require \u22652 of {digit, lowercase, uppercase[, special]}.",
+            "type": "string",
+            "enum": [
+              "alpha",
+              "alphanumeric",
+              "upper_lower_alphanumeric",
+              "alphanumeric_special",
+              "upper_lower_aplhanumeric_special"
+            ]
+          },
+          "limit": {
+            "default": 25,
+            "description": "Number of results to return. Omit for default 25. Max 1000. Response includes hasMore when more rows exist on the API.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_leaked_files",
+      "title": "Search leaked files",
+      "description": "PURPOSE: Search leaked file metadata with the leakfilesearch ES8 index (filenames, domains, tags, timestamps).\n\nUSE WHEN: User asks about any leaked file, file search, filename, file extension, file type, leaked document, attachment, spreadsheet, PDF, text file, log, archive, backup, or database dump.\n\nDO NOT USE WHEN: User only has a domain and wants credential leaks (use search_credential_leaks); user has a single generic indicator with no file angle (use search_exposure); user wants multi-keyword correlation only (use search_correlated_leaks).\n\nEXAMPLES: \"SQL dumps for Contoso\" -> file_categories=[\"database_dump\"]; \"Any spreadsheets mentioning example.org?\" -> query=\"example.org\", file_categories=[\"spreadsheet\"]; \"PDFs for Acme\" -> file_categories=[\"pdf\"]; \"txt files related to Acme\" -> file_categories=[\"text\"]; \"passwords.txt related to Acme\" -> filename_pattern=\"passwords.txt\".\n\nOUTPUT: JSON with results, count, summary, hasMore, and limit.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Domain, keyword, or company name. Domain-looking values are sent as the leakfile domain filter."
+          },
+          "filename_pattern": {
+            "description": "PASS THIS when the user names file extensions or filenames (e.g., *.sql, *.xlsx, *.csv, passwords.txt). Multiple patterns may be comma-separated.",
+            "type": "string"
+          },
+          "file_categories": {
+            "description": "PASS THIS for natural file-type wording: spreadsheets, database dumps, PDFs, documents, text files, logs, or archives.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "spreadsheet",
+                "database_dump",
+                "pdf",
+                "document",
+                "text",
+                "archive"
+              ]
+            }
+          },
+          "startDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "endDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "time_range_hours": {
+            "description": "Rolling lookback (8\u201372 hours). Ignored when startDate or endDate is set; use dates for longer ranges. DEFAULT (omit, along with startDate/endDate) = no time filter \u2014 returns the first page of all-time results, most recent first.",
+            "type": "integer",
+            "minimum": 8,
+            "maximum": 72
+          },
+          "searchtype": {
+            "description": "How the query term is matched against leak text. DEFAULT (omit) = 'wildcard_both' \u2014 contains/substring match (recommended). Use 'match_phrase' when the user says 'exact match', 'match exactly', or 'match exact' (exact phrase, no wildcards). Use 'wildcard_pre' when the user says 'include prefix' / 'include prefixes', or 'match domain...' \u2014 matches text that ENDS with the term, i.e. any prefix is allowed before it (e.g., emails ending in @domain.com). Use 'wildcard_post' when the user says 'include suffix' / 'include suffixes' \u2014 matches text that STARTS with the term, i.e. any suffix is allowed after it.",
+            "type": "string",
+            "enum": [
+              "wildcard_both",
+              "wildcard_pre",
+              "wildcard_post",
+              "match_phrase"
+            ]
+          },
+          "limit": {
+            "default": 25,
+            "description": "Number of results to return. Omit for default 25. Max 1000. Response includes hasMore when more rows exist on the API.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_correlated_leaks",
+      "title": "Correlated threat search",
+      "description": "PURPOSE: Multi-keyword \"word pool\" search \u2014 finds leaks where several related terms appear, with a minimum match count.\n\nUSE WHEN: User provides multiple related terms (brand + product + \"admin\", etc.) or asks for \"high confidence\" / correlated hits; investigator-style queries with 2+ keywords.\n\nDO NOT USE WHEN: User has only one IP, email, domain, or keyword (use search_exposure); user wants domain-only credential leaks (use search_credential_leaks); user cares primarily about file name patterns (use search_leaked_files).\n\nEXAMPLES: \"Leaks that mention both Acme and VPN and password\"; \"Pool: company name, database, backup \u2014 at least 2 must match\".\n\nOUTPUT: JSON with results, count, summary, hasMore, and limit.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of related terms (e.g., company, admin, password)"
+          },
+          "minimum_match": {
+            "default": 2,
+            "description": "Minimum number of keywords that must match",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "startDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "endDate": {
+            "description": "Fixed bound (ISO 8601, e.g. 2024-06-01 or 2024-06-01T00:00:00Z). Extension API: hack/domain use start_date/end_date; research uses startdate/enddate.",
+            "type": "string"
+          },
+          "time_range_hours": {
+            "description": "Rolling lookback (8\u201372 hours). Ignored when startDate or endDate is set; use dates for longer ranges. DEFAULT (omit, along with startDate/endDate) = no time filter \u2014 returns the first page of all-time results, most recent first.",
+            "type": "integer",
+            "minimum": 8,
+            "maximum": 72
+          },
+          "limit": {
+            "default": 25,
+            "description": "Number of results to return. Omit for default 25. Max 1000. Response includes hasMore when more rows exist on the API.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "debug": {
+            "default": false,
+            "description": "When true, include `_debug` with inbound MCP and outbound extension API request/response traces (secrets redacted). Set when the user prompt contains [debug].",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "keywords"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    }
+  ]
+}
