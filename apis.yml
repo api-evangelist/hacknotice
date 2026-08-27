@@ -32,26 +32,38 @@ tags:
 - Alerts
 - Monitoring
 apis:
-- aid: hacknotice:hacknotice-api
-  name: HackNotice API
-  description: 'REST API over the HackNotice threat-intelligence platform: authentication, leak and leak-file search,
-    first-party domain watchlists and alerts, third-party vendor watchlists, hacks and alerts, end-user watchlists
-    and alerts, threat-research search over terms, filenames and word pools, vendor security assessments with
-    AI scoring, and aggregate calculation endpoints. Documented by HackNotice as a public Postman collection; access
-    is granted to approved accounts after a consultation call.'
+- aid: hacknotice:hacknotice-mcp
+  name: HackNotice MCP Server
+  description: >-
+    Remote Model Context Protocol server operated by HackNotice, speaking JSON-RPC 2.0 over Streamable
+    HTTP at https://mcp.hacknotice.com:13330/mcp. It publishes 80 tools across third-party, first-party,
+    end-user, research and assessment groups, plus cross-cutting global-breach, exposure, chatter, credential-leak,
+    leaked-file and correlated-leak search. tools/list and initialize answer anonymously, so every tool
+    inputSchema is public; tools/call is gated on a per-user X-HackNotice-Integration-Key.
+  humanURL: https://github.com/HackNotice/n8n-nodes-hacknotice-mcp
+  baseURL: https://mcp.hacknotice.com:13330/mcp
+  tags:
+  - MCP
+  - Agents
+  - Threat Intelligence
+  - Security
+  properties:
+  - type: MCPServer
+    url: mcp/hacknotice-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/hacknotice-tool-crosswalk.yml
+  - type: SourceCode
+    url: https://github.com/HackNotice/n8n-nodes-hacknotice-mcp
+- aid: hacknotice:hacknotice-alerts-api
+  name: HackNotice Alerts API
+  description: Cross-service alert retrieval.
   humanURL: https://api-docs.hacknotice.com
   baseURL: https://extensionapi.hacknotice.com
   tags:
-  - Threat Intelligence
-  - Security
-  - Monitoring
   - Alerts
-  - Third Party Risk
   properties:
   - type: OpenAPI
-    url: openapi/hacknotice-openapi.yml
-  - type: Overlay
-    url: overlays/hacknotice-openapi-overlay.yaml
+    url: openapi/hacknotice-alerts-api-openapi.yml
   - type: Documentation
     url: https://api-docs.hacknotice.com
   - type: APIReference
@@ -68,27 +80,194 @@ apis:
     url: data-model/hacknotice-data-model.yml
   - type: Conventions
     url: conventions/hacknotice-conventions.yml
-- aid: hacknotice:hacknotice-mcp
-  name: HackNotice MCP Server
-  description: 'Remote Model Context Protocol server operated by HackNotice, speaking JSON-RPC 2.0 over Streamable
-    HTTP at https://mcp.hacknotice.com:13330/mcp. It publishes 80 tools across third-party, first-party, end-user,
-    research and assessment groups, plus cross-cutting global-breach, exposure, chatter, credential-leak, leaked-file
-    and correlated-leak search. tools/list and initialize answer anonymously, so every tool inputSchema is public;
-    tools/call is gated on a per-user X-HackNotice-Integration-Key.'
-  humanURL: https://github.com/HackNotice/n8n-nodes-hacknotice-mcp
-  baseURL: https://mcp.hacknotice.com:13330/mcp
+- aid: hacknotice:hacknotice-all-business-accounts-api
+  name: HackNotice All Business Accounts API
+  description: >-
+    Authentication, leak/leakfile search, customer records, metrics, habits, downloads, utilities and
+    item notes shared by every business account.
+  humanURL: https://api-docs.hacknotice.com
+  baseURL: https://extensionapi.hacknotice.com
   tags:
-  - MCP
-  - Agents
-  - Threat Intelligence
-  - Security
+  - All Business Accounts
   properties:
-  - type: MCPServer
-    url: mcp/hacknotice-mcp.yml
-  - type: ToolCrosswalk
-    url: mcp/hacknotice-tool-crosswalk.yml
-  - type: SourceCode
-    url: https://github.com/HackNotice/n8n-nodes-hacknotice-mcp
+  - type: OpenAPI
+    url: openapi/hacknotice-all-business-accounts-api-openapi.yml
+  - type: Documentation
+    url: https://api-docs.hacknotice.com
+  - type: APIReference
+    url: https://api-docs.hacknotice.com
+  - type: Postman
+    url: https://api-docs.hacknotice.com
+  - type: Authentication
+    url: authentication/hacknotice-authentication.yml
+  - type: RateLimits
+    url: rate-limits/hacknotice-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/hacknotice-problem-types.yml
+  - type: DataModel
+    url: data-model/hacknotice-data-model.yml
+  - type: Conventions
+    url: conventions/hacknotice-conventions.yml
+- aid: hacknotice:hacknotice-calc-endpoints-api
+  name: HackNotice Calc endpoints API
+  description: >-
+    Aggregate/rollup calculation endpoints for breaches, threat actors and per-service alerts.
+  humanURL: https://api-docs.hacknotice.com
+  baseURL: https://extensionapi.hacknotice.com
+  tags:
+  - Calc endpoints
+  properties:
+  - type: OpenAPI
+    url: openapi/hacknotice-calc-endpoints-api-openapi.yml
+  - type: Documentation
+    url: https://api-docs.hacknotice.com
+  - type: APIReference
+    url: https://api-docs.hacknotice.com
+  - type: Postman
+    url: https://api-docs.hacknotice.com
+  - type: Authentication
+    url: authentication/hacknotice-authentication.yml
+  - type: RateLimits
+    url: rate-limits/hacknotice-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/hacknotice-problem-types.yml
+  - type: DataModel
+    url: data-model/hacknotice-data-model.yml
+  - type: Conventions
+    url: conventions/hacknotice-conventions.yml
+- aid: hacknotice:hacknotice-deprecated-api
+  name: HackNotice Deprecated API
+  description: >-
+    Endpoints HackNotice groups as deprecated in its published collection (dark hash alerts, Teams accounts).
+  humanURL: https://api-docs.hacknotice.com
+  baseURL: https://extensionapi.hacknotice.com
+  tags:
+  - Deprecated
+  properties:
+  - type: OpenAPI
+    url: openapi/hacknotice-deprecated-api-openapi.yml
+  - type: Documentation
+    url: https://api-docs.hacknotice.com
+  - type: APIReference
+    url: https://api-docs.hacknotice.com
+  - type: Postman
+    url: https://api-docs.hacknotice.com
+  - type: Authentication
+    url: authentication/hacknotice-authentication.yml
+  - type: RateLimits
+    url: rate-limits/hacknotice-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/hacknotice-problem-types.yml
+  - type: DataModel
+    url: data-model/hacknotice-data-model.yml
+  - type: Conventions
+    url: conventions/hacknotice-conventions.yml
+- aid: hacknotice:hacknotice-domain-business-accounts-api
+  name: HackNotice Domain Business Accounts API
+  description: >-
+    First-party domain monitoring: domain watchlists, domain leaks, domain alerts and downloads.
+  humanURL: https://api-docs.hacknotice.com
+  baseURL: https://extensionapi.hacknotice.com
+  tags:
+  - Domain Business Accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/hacknotice-domain-business-accounts-api-openapi.yml
+  - type: Documentation
+    url: https://api-docs.hacknotice.com
+  - type: APIReference
+    url: https://api-docs.hacknotice.com
+  - type: Postman
+    url: https://api-docs.hacknotice.com
+  - type: Authentication
+    url: authentication/hacknotice-authentication.yml
+  - type: RateLimits
+    url: rate-limits/hacknotice-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/hacknotice-problem-types.yml
+  - type: DataModel
+    url: data-model/hacknotice-data-model.yml
+  - type: Conventions
+    url: conventions/hacknotice-conventions.yml
+- aid: hacknotice:hacknotice-enduser-business-accounts-api
+  name: HackNotice Enduser Business Accounts API
+  description: 'End-user monitoring: end-user watchlists, end-user leaks and end-user alerts.'
+  humanURL: https://api-docs.hacknotice.com
+  baseURL: https://extensionapi.hacknotice.com
+  tags:
+  - Enduser Business Accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/hacknotice-enduser-business-accounts-api-openapi.yml
+  - type: Documentation
+    url: https://api-docs.hacknotice.com
+  - type: APIReference
+    url: https://api-docs.hacknotice.com
+  - type: Postman
+    url: https://api-docs.hacknotice.com
+  - type: Authentication
+    url: authentication/hacknotice-authentication.yml
+  - type: RateLimits
+    url: rate-limits/hacknotice-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/hacknotice-problem-types.yml
+  - type: DataModel
+    url: data-model/hacknotice-data-model.yml
+  - type: Conventions
+    url: conventions/hacknotice-conventions.yml
+- aid: hacknotice:hacknotice-research-service-accounts-api
+  name: HackNotice Research Service Accounts API
+  description: Threat-research search over terms, filenames and word pools, plus saved searches.
+  humanURL: https://api-docs.hacknotice.com
+  baseURL: https://extensionapi.hacknotice.com
+  tags:
+  - Research Service Accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/hacknotice-research-service-accounts-api-openapi.yml
+  - type: Documentation
+    url: https://api-docs.hacknotice.com
+  - type: APIReference
+    url: https://api-docs.hacknotice.com
+  - type: Postman
+    url: https://api-docs.hacknotice.com
+  - type: Authentication
+    url: authentication/hacknotice-authentication.yml
+  - type: RateLimits
+    url: rate-limits/hacknotice-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/hacknotice-problem-types.yml
+  - type: DataModel
+    url: data-model/hacknotice-data-model.yml
+  - type: Conventions
+    url: conventions/hacknotice-conventions.yml
+- aid: hacknotice:hacknotice-third-party-accounts-api
+  name: HackNotice Third Party Accounts API
+  description: >-
+    Third-party vendor monitoring: hacks, hack updates, watchlists, alerts and vendor security assessments.
+  humanURL: https://api-docs.hacknotice.com
+  baseURL: https://extensionapi.hacknotice.com
+  tags:
+  - Third Party Accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/hacknotice-third-party-accounts-api-openapi.yml
+  - type: Documentation
+    url: https://api-docs.hacknotice.com
+  - type: APIReference
+    url: https://api-docs.hacknotice.com
+  - type: Postman
+    url: https://api-docs.hacknotice.com
+  - type: Authentication
+    url: authentication/hacknotice-authentication.yml
+  - type: RateLimits
+    url: rate-limits/hacknotice-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/hacknotice-problem-types.yml
+  - type: DataModel
+    url: data-model/hacknotice-data-model.yml
+  - type: Conventions
+    url: conventions/hacknotice-conventions.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
