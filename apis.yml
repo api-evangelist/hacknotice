@@ -9,6 +9,19 @@ description: 'HackNotice is an external threat-intelligence and cyber-risk platf
   exposes this surface programmatically through a REST API documented as a public Postman collection at
   api-docs.hacknotice.com, a remote Model Context Protocol server at mcp.hacknotice.com whose tool catalogue answers
   anonymously, first-party n8n automation nodes on npm, and webhook, Splunk HEC and SIEM/SOAR alert delivery.'
+deliveryModel:
+  model: unknown
+  open_source: unknown
+  commercial: true
+  callable_host: true
+  label: Delivery model not determined — needs a product licence on record
+  confidence: low
+  source:
+  - openapi
+  - pricing
+  - repository-unlicensed
+  generated: '2026-08-28'
+  method: derived
 image: https://hacknotice.com/wp-content/uploads/2022/12/favicon.png
 url: https://raw.githubusercontent.com/api-evangelist/hacknotice/refs/heads/main/apis.yml
 x-type: company
