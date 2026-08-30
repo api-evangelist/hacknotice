@@ -1,0 +1,1277 @@
+openapi: 3.2.0
+info:
+  title: HackNotice All Business Accounts API
+  version: '2026-08-22'
+  summary: External threat-intelligence API for first-party, third-party and end-user breach monitoring, threat research and vendor assessments.
+  description: 'HackNotice''s REST API over its external threat-intelligence platform: credential and breach alerts for first-party domains, third-party vendors and end users; dark-web / hacker-forum research search; and AI-assisted vendor security assessments.
+
+
+    PROVENANCE: this document was DERIVED by API Evangelist from HackNotice''s own published Postman collection "HackNotice-API", reached at https://api-docs.hacknotice.com (HTTP 301 -> https://documenter.getpostman.com/view/806684/2sBXiri7pT), linked from HackNotice''s help centre article "API". Paths, methods, parameters, request bodies and tags are transcribed from that collection; nothing was invented. Concrete record ids in the collection''s example URLs were templated into path parameters, and every token-shaped example value was redacted.
+
+
+    HackNotice publishes a rate limit of 1 query per second, and states that API access is granted to approved accounts only after a 30-minute consultation call.'
+  termsOfService: https://hacknotice.com/businesstandc/
+  contact:
+    name: HackNotice Support
+    url: https://hacknotice.zendesk.com/hc/en-us
+    email: support@hacknotice.com
+  x-api-evangelist-derived-from: https://api-docs.hacknotice.com
+servers:
+- url: https://extensionapi.hacknotice.com
+  description: HackNotice production API host, as declared by HackNotice's own first-party n8n node (API_BASE_URL in credentials/HackNoticeApi.credentials.ts, github.com/HackNotice/n8n-nodes-hacknotice). The published Postman collection ships an internal {{url}} variable pointing at a developer VPN host, which is not the production base.
+security:
+- jwtAuth: []
+- apiKeyAuth: []
+tags:
+- name: All Business Accounts
+  description: Authentication, leak/leakfile search, customer records, metrics, habits, downloads, utilities and item notes shared by every business account.
+paths:
+  /auth/sign_in:
+    post:
+      tags:
+      - All Business Accounts
+      summary: Sign In
+      operationId: postSignIn
+      description: 'Folder: Authentication.'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Must be an existing account without 2FA turned on.
+                password:
+                  type: string
+                  description: Must be at least 14 characters
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /auth/sign_out:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Sign out
+      operationId: getSignOut
+      description: 'Folder: Authentication.'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /auth/sign_out_all:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Sign out all sessions
+      operationId: getSignOutAllSessions
+      description: 'Folder: Authentication.'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /auth/twofa_sign_in:
+    post:
+      tags:
+      - All Business Accounts
+      summary: 2FA Sign In
+      operationId: post2FaSignIn
+      description: 'Folder: Authentication.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Must be an existing account with 2FA turned on.
+                password:
+                  type: string
+                  description: Must be at least 14 characters
+                token:
+                  type: string
+                  description: Google Authenticator Token
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /customerHabits:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Read a document
+      operationId: getReadADocument5
+      description: 'Folder: Customer Habits. Get a document by the document ID.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+    put:
+      tags:
+      - All Business Accounts
+      summary: Update habits
+      operationId: putUpdateHabits
+      description: 'Folder: Customer Habits.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                remediations:
+                  type: array
+            example:
+              remediations:
+              - remediated: false
+                remediationTag: financial-creditreports
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /customers:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Read a document
+      operationId: getReadADocument3
+      description: 'Folder: Customer. Get a document by the document ID.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+    post:
+      tags:
+      - All Business Accounts
+      summary: Update a document
+      operationId: postUpdateADocument
+      description: 'Folder: Customer. Get a document by the document ID.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contactInformation:
+                  type: object
+                preferences:
+                  type: object
+            example:
+              contactInformation:
+                phone: 555-555-5555
+                email: contact@hacknotice.com
+                url: hacknotice.zendesk.com
+                process: Email.
+              preferences:
+                sendWelcome: monthly
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /customers/accounts:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Read accounts
+      operationId: getReadAccounts
+      description: 'Folder: Customer.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /customerstats:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Read a document
+      operationId: getReadADocument4
+      description: 'Folder: Customer Metrics. Get a document by the document ID.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /downloads:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Read downloads to see if file is ready
+      operationId: getReadDownloadsToSeeIfFileIsReady
+      description: 'Folder: Downloads.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /downloads/{documentId}:
+    get:
+      tags:
+      - All Business Accounts
+      summary: download file
+      operationId: getDownloadFile
+      description: 'Folder: Downloads.'
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /itemnotes/count:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Get the count of documents
+      operationId: getTheCountOfDocuments2
+      description: 'Folder: Item Notes. Get the Count of Documents Purpose: Return the number of assessment data files for the authenticated customer. Request Body (Optional) Field Type Description assessment_id string If provided, returns count only for this assessment Body Example { "assessment_id": "69aadd3f4620e8b72b9ffffc" } Responses Status Description 200 Numeric count (for example 12 ) 401 Unauthorized user'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /itemnotes/create:
+    post:
+      tags:
+      - All Business Accounts
+      summary: Create a doc
+      operationId: postCreateADoc
+      description: 'Folder: Item Notes. Add a domain to your watchlist.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                note:
+                  type: string
+                item_id:
+                  type: string
+                item_type:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /itemnotes/customer/count:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Get the count of documents
+      operationId: getTheCountOfDocuments
+      description: 'Folder: Item Notes / customer level endpoints. Get the count of documents'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /itemnotes/customer/itemdoc:
+    post:
+      tags:
+      - All Business Accounts
+      summary: Search for a note for an item
+      operationId: postSearchForANoteForAnItem
+      description: 'Folder: Item Notes / customer level endpoints. Search your watchlist for a domain.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                item_id:
+                  type: string
+                item_type:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /itemnotes/customer/page/{pageNum}:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Read a page of documents
+      operationId: getReadAPageOfDocuments
+      description: 'Folder: Item Notes / customer level endpoints. Read all domains.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /itemnotes/customer/{customerId}:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Read a doc
+      operationId: getReadADoc
+      description: 'Folder: Item Notes / customer level endpoints. Get a document by the document ID.'
+      parameters:
+      - name: customerId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+    delete:
+      tags:
+      - All Business Accounts
+      summary: Delete a doc
+      operationId: deleteADoc
+      description: 'Folder: Item Notes / customer level endpoints. Remove a document by the document ID.'
+      parameters:
+      - name: customerId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /itemnotes/itemdoc:
+    post:
+      tags:
+      - All Business Accounts
+      summary: Search for a note for an item
+      operationId: postSearchForANoteForAnItem2
+      description: 'Folder: Item Notes. Search your watchlist for a domain.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                item_id:
+                  type: string
+                item_type:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /itemnotes/page/{pageNum}:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Read a page of documents
+      operationId: getReadAPageOfDocuments2
+      description: 'Folder: Item Notes. Read a Page of Documents Purpose: Return a paginated list of assessment data files for the authenticated customer. Path Parameters Parameter Description pageNum Zero-based page index. Page size is fixed at 50 . Request Body (Optional) Field Type Description assessment_id string If provided, returns files only for this assessment Body Example { "assessment_id": "69aadd3f4620e8b72b9ffffc" } Responses Status Description 200 Array of file metadata documents (newest first) 401 Unauthorized user'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /itemnotes/{noteId}:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Read a doc
+      operationId: getReadADoc2
+      description: 'Folder: Item Notes. Get a document by the document ID.'
+      parameters:
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+    put:
+      tags:
+      - All Business Accounts
+      summary: Update a doc
+      operationId: putUpdateADoc
+      description: 'Folder: Item Notes. Get a document by the document ID.'
+      parameters:
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note:
+                  type: string
+            example:
+              note: updated note
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+    delete:
+      tags:
+      - All Business Accounts
+      summary: Delete a doc
+      operationId: deleteADoc2
+      description: 'Folder: Item Notes. Remove a document by the document ID.'
+      parameters:
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /leakReportsv2/count:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Read a count of documents
+      operationId: getReadACountOfDocuments
+      description: 'Folder: All Leaks.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /leakReportsv2/search:
+    post:
+      tags:
+      - All Business Accounts
+      summary: Search all
+      operationId: postSearchAll
+      description: 'Folder: All Leaks. Searches all documents and returns documents in reverse chronological order.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                term:
+                  type: string
+                  description: Inclusive string search for the value in the domain or title
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /leakReportsv2/{documentId}:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Read a document
+      operationId: getReadADocument
+      description: 'Folder: All Leaks. Get a document by the document ID.'
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /leakfile/filename:
+    post:
+      tags:
+      - All Business Accounts
+      summary: Get by filename
+      operationId: postGetByFilename
+      description: 'Folder: LeakFiles. Get a leakfile by filename. Research service customer only endpoint.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                term:
+                  type: string
+                  description: String search for the exact value in the domain.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /leakfile/search:
+    post:
+      tags:
+      - All Business Accounts
+      summary: Search all
+      operationId: postSearchAll2
+      description: 'Folder: LeakFiles. Searches all documents and returns documents in reverse chronological order.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                term:
+                  type: string
+                  description: String search for the exact value in the domain.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /leakfile/{documentId}:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Read a document
+      operationId: getReadADocument2
+      description: 'Folder: LeakFiles. Get a document by the document ID.'
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /leakfilestats/count:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Read count
+      operationId: getReadCount
+      description: 'Folder: LeakFileStats.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /leakfilestats/find:
+    post:
+      tags:
+      - All Business Accounts
+      summary: Find one
+      operationId: postFindOne
+      description: 'Folder: LeakFileStats. Get a document by the document ID.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+            example:
+              date: '2019-04-10'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /leakfilestats/latest:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Read latest
+      operationId: getReadLatest
+      description: 'Folder: LeakFileStats. Get a document by the document ID.'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /leakfilestats/page/{pageNum}:
+    get:
+      tags:
+      - All Business Accounts
+      summary: Read page
+      operationId: getReadPage
+      description: 'Folder: LeakFileStats.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /utils/sha512:
+    post:
+      tags:
+      - All Business Accounts
+      summary: Create a SHA512 hash
+      operationId: postCreateASha512Hash
+      description: 'Folder: Utils. Add a domain to your watchlist.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /utils/sha512half:
+    post:
+      tags:
+      - All Business Accounts
+      summary: Create a SHA512 half hash
+      operationId: postCreateASha512HalfHash
+      description: 'Folder: Utils. Add a domain to your watchlist.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+components:
+  schemas:
+    Error:
+      type: object
+      description: HackNotice error envelope observed on the live API hosts.
+      properties:
+        message:
+          type: string
+          description: Human-readable error message, e.g. "Unauthorized user!" or "Not found".
+  securitySchemes:
+    jwtAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Session token from POST /auth/sign_in, sent as the literal prefix "JWT " followed by the token — e.g. Authorization: JWT <token>. Note this is HackNotice''s own scheme, not RFC 6750 Bearer.'
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: apikey
+      description: Per-account API key issued by HackNotice, sent in the lower-case "apikey" header alongside the JWT on most operations.
+    integrationKeyAuth:
+      type: apiKey
+      in: header
+      name: X-HackNotice-Integration-Key
+      description: Per-user HackNotice integration secret (hn_ik_ prefix). Single-header alternative to apikey + email + password; also the credential used by the HackNotice MCP server.

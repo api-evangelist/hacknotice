@@ -1,0 +1,459 @@
+openapi: 3.2.0
+info:
+  title: HackNotice Alerts API
+  version: '2026-08-22'
+  summary: External threat-intelligence API for first-party, third-party and end-user breach monitoring, threat research and vendor assessments.
+  description: 'HackNotice''s REST API over its external threat-intelligence platform: credential and breach alerts for first-party domains, third-party vendors and end users; dark-web / hacker-forum research search; and AI-assisted vendor security assessments.
+
+
+    PROVENANCE: this document was DERIVED by API Evangelist from HackNotice''s own published Postman collection "HackNotice-API", reached at https://api-docs.hacknotice.com (HTTP 301 -> https://documenter.getpostman.com/view/806684/2sBXiri7pT), linked from HackNotice''s help centre article "API". Paths, methods, parameters, request bodies and tags are transcribed from that collection; nothing was invented. Concrete record ids in the collection''s example URLs were templated into path parameters, and every token-shaped example value was redacted.
+
+
+    HackNotice publishes a rate limit of 1 query per second, and states that API access is granted to approved accounts only after a 30-minute consultation call.'
+  termsOfService: https://hacknotice.com/businesstandc/
+  contact:
+    name: HackNotice Support
+    url: https://hacknotice.zendesk.com/hc/en-us
+    email: support@hacknotice.com
+  x-api-evangelist-derived-from: https://api-docs.hacknotice.com
+servers:
+- url: https://extensionapi.hacknotice.com
+  description: HackNotice production API host, as declared by HackNotice's own first-party n8n node (API_BASE_URL in credentials/HackNoticeApi.credentials.ts, github.com/HackNotice/n8n-nodes-hacknotice). The published Postman collection ships an internal {{url}} variable pointing at a developer VPN host, which is not the production base.
+security:
+- jwtAuth: []
+- apiKeyAuth: []
+tags:
+- name: Alerts
+  description: Cross-service alert retrieval.
+paths:
+  /domainalerts/page/{pageNum}:
+    post:
+      tags:
+      - Alerts
+      summary: Read first-party alerts page
+      operationId: postReadFirstPartyAlertsPage
+      description: 'Read First-Party Alerts Page Route: POST /domainalerts/page/:pageNum Returns paginated domain/first-party alerts. Common body filters tier , tag , unmatchTier domainwatchlist_id remediated , deleted sort ( timestamp supported) Time filters: start_date , end_date , hours_ago Credential/detail toggles: creds , credsonly , strongonly , allkeys , csv , keyonly Optional leak/credential filters: leaks , infostealer , credentialdump , redact_password , password_length , password_criteria pageNum is zero-based.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tier:
+                  type: string
+                tag:
+                  type: string
+                remediated:
+                  type: boolean
+                start_date:
+                  type: string
+                end_date:
+                  type: string
+            example:
+              tier: high
+              tag: password
+              remediated: false
+              start_date: '2026-03-01T00:00:00.000Z'
+              end_date: '2026-03-26T00:00:00.000Z'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+  /enduseralerts/page/{pageNum}:
+    post:
+      tags:
+      - Alerts
+      summary: Read end-user alerts page
+      operationId: postReadEndUserAlertsPage
+      description: 'Read End-User Alerts Page Route: POST /enduseralerts/page/:pageNum Returns paginated end-user alerts. Common body filters term (exact email match) tier , tag remediated , deleted days sort ( timestamp ) and pubsort Credential/detail toggles: hashpass , leaks , creds , credsonly , csv , allkeys , keyonly pageNum is zero-based.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                term:
+                  type: string
+                tier:
+                  type: string
+                tag:
+                  type: string
+                remediated:
+                  type: boolean
+                days:
+                  type: integer
+            example:
+              term: user@example.com
+              tier: medium
+              tag: credential
+              remediated: false
+              days: 7
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+  /hackalerts/page/{pageNum}:
+    post:
+      tags:
+      - Alerts
+      summary: Read third-party alerts page
+      operationId: postReadThirdPartyAlertsPage
+      description: 'Read Third-Party Alerts Page Route: POST /hackalerts/page/:pageNum Returns paginated third-party alerts. Common body filters sort : alphabetically , timestamp , severity tier , tag , harvester , sourcetype remediated : true|false Time filters: days , start_date , end_date , hours_ago Industry/geo filters: topnaicscode , topnaicscodearray , region , regionarray Other switches used by clients: rss , allkeys , csv , credsonly , creds , deleted pageNum is zero-based.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sort:
+                  type: string
+                tier:
+                  type: string
+                tag:
+                  type: string
+                remediated:
+                  type: boolean
+                hours_ago:
+                  type: integer
+            example:
+              sort: timestamp
+              tier: high
+              tag: password
+              remediated: false
+              hours_ago: 24
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+  /research8/search/filename/term/page/{pageNum}:
+    post:
+      tags:
+      - Alerts
+      summary: Search research phrase+filename alerts page
+      operationId: postSearchResearchPhraseFilenameAlertsPage
+      description: 'Search Research Phrase + Filename Alerts Page Route: POST /research8/search/filename/term/page/:pageNum Uses the same options as phrase search, with filename matching enabled. Required fields term searchtype Filename-specific fields filename filesearchtype (for example wildcard_post ) Additional optional fields order , startdate , enddate , hours_ago , searchafter , allkeys , fullrecords , creds , credsonly , csv , word , blob , redacted , domainfilter , monthly .'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                term:
+                  type: string
+                searchtype:
+                  type: string
+                filename:
+                  type: string
+                filesearchtype:
+                  type: string
+                order:
+                  type: string
+                hours_ago:
+                  type: integer
+                allkeys:
+                  type: boolean
+                fullrecords:
+                  type: boolean
+            example:
+              term: acme.com
+              searchtype: match_phrase
+              filename: dump
+              filesearchtype: wildcard_post
+              order: desc
+              hours_ago: 24
+              allkeys: false
+              fullrecords: false
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+  /research8/search/pool/page/{pageNum}:
+    post:
+      tags:
+      - Alerts
+      summary: Search research word pool alerts page
+      operationId: postSearchResearchWordPoolAlertsPage
+      description: 'Search Research Word Pool Alerts Page Route: POST /research8/search/pool/page/:pageNum Required fields pool (array of terms) match (minimum match threshold; must be > 0) Optional fields searchtype order Date filters: startdate , enddate , hours_ago Paging cursor: searchafter Output toggles: allkeys , fullrecords , csv , word , blob , redacted Credential toggles: creds , credsonly Other: domainfilter , monthly pageNum is zero-based.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pool:
+                  type: array
+                match:
+                  type: integer
+                searchtype:
+                  type: string
+                order:
+                  type: string
+                hours_ago:
+                  type: integer
+                searchafter:
+                  type: integer
+                allkeys:
+                  type: boolean
+                fullrecords:
+                  type: boolean
+                creds:
+                  type: boolean
+                credsonly:
+                  type: boolean
+                csv:
+                  type: boolean
+                word:
+                  type: boolean
+                blob:
+                  type: boolean
+                redacted:
+                  type: boolean
+                domainfilter:
+                  type: boolean
+            example:
+              pool:
+              - acme.com
+              - example.com
+              match: 1
+              searchtype: match_phrase
+              order: desc
+              hours_ago: 24
+              searchafter: -1
+              allkeys: false
+              fullrecords: false
+              creds: false
+              credsonly: false
+              csv: false
+              word: false
+              blob: false
+              redacted: false
+              domainfilter: false
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+  /research8/search/term/page/{pageNum}:
+    post:
+      tags:
+      - Alerts
+      summary: Search research phrase alerts page
+      operationId: postSearchResearchPhraseAlertsPage
+      description: 'Search Research Phrase Alerts Page Route: POST /research8/search/term/page/:pageNum Required fields term (string) searchtype (string) Optional filters/options order : asc|desc Date filters: startdate , enddate , hours_ago Paging cursor: searchafter Output toggles: allkeys , fullrecords , csv , word , blob , redacted Credential toggles: creds , credsonly Other: domainfilter , monthly pageNum is zero-based (server enforces an upper page cap in this endpoint family).'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                term:
+                  type: string
+                searchtype:
+                  type: string
+                order:
+                  type: string
+                hours_ago:
+                  type: integer
+                allkeys:
+                  type: boolean
+                fullrecords:
+                  type: boolean
+                creds:
+                  type: boolean
+                credsonly:
+                  type: boolean
+                csv:
+                  type: boolean
+                word:
+                  type: boolean
+                blob:
+                  type: boolean
+                redacted:
+                  type: boolean
+                domainfilter:
+                  type: boolean
+            example:
+              term: acme.com
+              searchtype: match_phrase
+              order: desc
+              hours_ago: 24
+              allkeys: false
+              fullrecords: false
+              creds: false
+              credsonly: false
+              csv: false
+              word: false
+              blob: false
+              redacted: false
+              domainfilter: false
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+  /saved-searches/{productKey}:
+    get:
+      tags:
+      - Alerts
+      summary: List saved searches by product-key
+      operationId: getListSavedSearchesByProductKey
+      description: 'List Saved Searches by Product Key Purpose: Return saved searches for the authenticated customer and selected product line. Path Parameters Parameter Required Description product-key Yes Product domain for saved searches Allowed product-key Values Value firstparty enduser thirdparty research Query Parameters Parameter Required Applies To Allowed Values endpoint Yes product-key=research phrase , wordpool Responses Status Description 200 Saved search records 401 Unauthorized user 500 Internal server error'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      parameters:
+      - name: productKey
+        in: path
+        required: true
+        schema:
+          type: string
+components:
+  schemas:
+    Error:
+      type: object
+      description: HackNotice error envelope observed on the live API hosts.
+      properties:
+        message:
+          type: string
+          description: Human-readable error message, e.g. "Unauthorized user!" or "Not found".
+  securitySchemes:
+    jwtAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Session token from POST /auth/sign_in, sent as the literal prefix "JWT " followed by the token — e.g. Authorization: JWT <token>. Note this is HackNotice''s own scheme, not RFC 6750 Bearer.'
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: apikey
+      description: Per-account API key issued by HackNotice, sent in the lower-case "apikey" header alongside the JWT on most operations.
+    integrationKeyAuth:
+      type: apiKey
+      in: header
+      name: X-HackNotice-Integration-Key
+      description: Per-user HackNotice integration secret (hn_ik_ prefix). Single-header alternative to apikey + email + password; also the credential used by the HackNotice MCP server.

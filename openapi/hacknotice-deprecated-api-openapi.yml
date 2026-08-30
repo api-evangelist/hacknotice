@@ -1,0 +1,440 @@
+openapi: 3.2.0
+info:
+  title: HackNotice Deprecated API
+  version: '2026-08-22'
+  summary: External threat-intelligence API for first-party, third-party and end-user breach monitoring, threat research and vendor assessments.
+  description: 'HackNotice''s REST API over its external threat-intelligence platform: credential and breach alerts for first-party domains, third-party vendors and end users; dark-web / hacker-forum research search; and AI-assisted vendor security assessments.
+
+
+    PROVENANCE: this document was DERIVED by API Evangelist from HackNotice''s own published Postman collection "HackNotice-API", reached at https://api-docs.hacknotice.com (HTTP 301 -> https://documenter.getpostman.com/view/806684/2sBXiri7pT), linked from HackNotice''s help centre article "API". Paths, methods, parameters, request bodies and tags are transcribed from that collection; nothing was invented. Concrete record ids in the collection''s example URLs were templated into path parameters, and every token-shaped example value was redacted.
+
+
+    HackNotice publishes a rate limit of 1 query per second, and states that API access is granted to approved accounts only after a 30-minute consultation call.'
+  termsOfService: https://hacknotice.com/businesstandc/
+  contact:
+    name: HackNotice Support
+    url: https://hacknotice.zendesk.com/hc/en-us
+    email: support@hacknotice.com
+  x-api-evangelist-derived-from: https://api-docs.hacknotice.com
+servers:
+- url: https://extensionapi.hacknotice.com
+  description: HackNotice production API host, as declared by HackNotice's own first-party n8n node (API_BASE_URL in credentials/HackNoticeApi.credentials.ts, github.com/HackNotice/n8n-nodes-hacknotice). The published Postman collection ships an internal {{url}} variable pointing at a developer VPN host, which is not the production base.
+security:
+- jwtAuth: []
+- apiKeyAuth: []
+tags:
+- name: Deprecated
+  description: Endpoints HackNotice groups as deprecated in its published collection (dark hash alerts, Teams accounts).
+paths:
+  /darkhashalerts/count:
+    get:
+      tags:
+      - Deprecated
+      summary: Read count for alerts
+      operationId: getReadCountForAlerts3
+      description: 'Folder: Dark hash alerts.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      deprecated: true
+    post:
+      tags:
+      - Deprecated
+      summary: Read count for term
+      operationId: postReadCountForTerm
+      description: 'Folder: Dark hash alerts.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                term:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      deprecated: true
+  /darkhashalerts/count/{number}:
+    get:
+      tags:
+      - Deprecated
+      summary: Read count for a number of previous days of alerts
+      operationId: getReadCountForANumberOfPreviousDaysOfAlerts2
+      description: 'Folder: Dark hash alerts.'
+      parameters:
+      - name: number
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      deprecated: true
+  /darkhashalerts/page/{pageNum}:
+    get:
+      tags:
+      - Deprecated
+      summary: Read a page of alerts
+      operationId: getReadAPageOfAlerts2
+      description: 'Folder: Dark hash alerts. Read a page of the most recent alerts.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      deprecated: true
+    post:
+      tags:
+      - Deprecated
+      summary: Post a page of alerts with options
+      operationId: postAPageOfAlertsWithOptions2
+      description: 'Folder: Dark hash alerts. Main method for getting back pages of alerts for end user and Dark Hash Collisions. If you are using the dark hash collisions service, you can set the hashpass to true to receive back just the hash and the password for alerts that have both. You can also set the pubsort to true to sort by published_date instead of timestamp, which resolves the issue of older published_date alerts being shown before newer published_date alerts, due to the older alerts having a newer timestamp.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                pubsort:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      deprecated: true
+  /darkhashalerts/search/page/{pageNum}:
+    post:
+      tags:
+      - Deprecated
+      summary: Search email within alerts
+      operationId: postSearchEmailWithinAlerts2
+      description: 'Folder: Dark hash alerts. Returns the first page of alerts for the email. Use the by page to get the next page.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                term:
+                  type: string
+                  description: Inclusive string search for the email in the alert
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      deprecated: true
+  /darkhashalerts/{documentId}:
+    get:
+      tags:
+      - Deprecated
+      summary: Read a document
+      operationId: getReadADocument11
+      description: 'Folder: Dark hash alerts.'
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      deprecated: true
+  /enterpriseHabits:
+    get:
+      tags:
+      - Deprecated
+      summary: Read a document
+      operationId: getReadADocument12
+      description: 'Folder: Teams Accounts / Enterprise Habits. Get a document by the document ID.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      deprecated: true
+    put:
+      tags:
+      - Deprecated
+      summary: Update habits
+      operationId: putUpdateHabits2
+      description: 'Folder: Teams Accounts / Enterprise Habits.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                remediations:
+                  type: array
+            example:
+              remediations:
+              - remediated: true
+                remediationTag: financial-creditreports
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      deprecated: true
+  /userstats/active/count:
+    get:
+      tags:
+      - Deprecated
+      summary: Read active docs count
+      operationId: getReadActiveDocsCount
+      description: 'Folder: Teams Accounts / Active Userstats. Get a count of active userstats. Can also be a post and include the enterprisedepartment_id'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      deprecated: true
+  /userstats/active/{number}:
+    get:
+      tags:
+      - Deprecated
+      summary: Read active docs page
+      operationId: getReadActiveDocsPage
+      description: 'Folder: Teams Accounts / Active Userstats. Get a page of active userstats. Can also be a post and include the enterprisedepartment_id'
+      parameters:
+      - name: number
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+      deprecated: true
+components:
+  schemas:
+    Error:
+      type: object
+      description: HackNotice error envelope observed on the live API hosts.
+      properties:
+        message:
+          type: string
+          description: Human-readable error message, e.g. "Unauthorized user!" or "Not found".
+  securitySchemes:
+    jwtAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Session token from POST /auth/sign_in, sent as the literal prefix "JWT " followed by the token — e.g. Authorization: JWT <token>. Note this is HackNotice''s own scheme, not RFC 6750 Bearer.'
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: apikey
+      description: Per-account API key issued by HackNotice, sent in the lower-case "apikey" header alongside the JWT on most operations.
+    integrationKeyAuth:
+      type: apiKey
+      in: header
+      name: X-HackNotice-Integration-Key
+      description: Per-user HackNotice integration secret (hn_ik_ prefix). Single-header alternative to apikey + email + password; also the credential used by the HackNotice MCP server.

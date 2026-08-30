@@ -1,0 +1,902 @@
+openapi: 3.2.0
+info:
+  title: HackNotice Enduser Business Accounts API
+  version: '2026-08-22'
+  summary: External threat-intelligence API for first-party, third-party and end-user breach monitoring, threat research and vendor assessments.
+  description: 'HackNotice''s REST API over its external threat-intelligence platform: credential and breach alerts for first-party domains, third-party vendors and end users; dark-web / hacker-forum research search; and AI-assisted vendor security assessments.
+
+
+    PROVENANCE: this document was DERIVED by API Evangelist from HackNotice''s own published Postman collection "HackNotice-API", reached at https://api-docs.hacknotice.com (HTTP 301 -> https://documenter.getpostman.com/view/806684/2sBXiri7pT), linked from HackNotice''s help centre article "API". Paths, methods, parameters, request bodies and tags are transcribed from that collection; nothing was invented. Concrete record ids in the collection''s example URLs were templated into path parameters, and every token-shaped example value was redacted.
+
+
+    HackNotice publishes a rate limit of 1 query per second, and states that API access is granted to approved accounts only after a 30-minute consultation call.'
+  termsOfService: https://hacknotice.com/businesstandc/
+  contact:
+    name: HackNotice Support
+    url: https://hacknotice.zendesk.com/hc/en-us
+    email: support@hacknotice.com
+  x-api-evangelist-derived-from: https://api-docs.hacknotice.com
+servers:
+- url: https://extensionapi.hacknotice.com
+  description: HackNotice production API host, as declared by HackNotice's own first-party n8n node (API_BASE_URL in credentials/HackNoticeApi.credentials.ts, github.com/HackNotice/n8n-nodes-hacknotice). The published Postman collection ships an internal {{url}} variable pointing at a developer VPN host, which is not the production base.
+security:
+- jwtAuth: []
+- apiKeyAuth: []
+tags:
+- name: Enduser Business Accounts
+  description: 'End-user monitoring: end-user watchlists, end-user leaks and end-user alerts.'
+paths:
+  /enduseralerts:
+    put:
+      tags:
+      - Enduser Business Accounts
+      summary: Fix enduseralerts for a list of alert  _ids
+      operationId: putFixEnduseralertsForAListOfAlertIds
+      description: 'Folder: End user alerts.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                alerts:
+                  type: array
+            example:
+              alerts:
+              - 5e43dd50721d2b2bde6d5b5d
+              - 5e4350b3721d2b2bde6d596c
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralerts/count:
+    get:
+      tags:
+      - Enduser Business Accounts
+      summary: Read count for alerts
+      operationId: getReadCountForAlerts2
+      description: 'Folder: End user alerts.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralerts/count/{number}:
+    get:
+      tags:
+      - Enduser Business Accounts
+      summary: Read count for a number of previous days of alerts
+      operationId: getReadCountForANumberOfPreviousDaysOfAlerts
+      description: 'Folder: End user alerts.'
+      parameters:
+      - name: number
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralerts/deleted/page/{pageNum}:
+    get:
+      tags:
+      - Enduser Business Accounts
+      summary: Read a page of deleted alerts
+      operationId: getReadAPageOfDeletedAlerts
+      description: 'Folder: End user alerts. Read a page of the most recent alerts that have the deleted flag set to true.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralerts/enduserwatchlist/update:
+    post:
+      tags:
+      - Enduser Business Accounts
+      summary: Update enduseralerts tags for an email
+      operationId: postUpdateEnduseralertsTagsForAnEmail
+      description: 'Folder: End user alerts.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                tags:
+                  type: array
+            example:
+              email: example@example.com
+              tags:
+              - Tag A
+              - Tag B
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralerts/lastdate:
+    get:
+      tags:
+      - Enduser Business Accounts
+      summary: Read last alert date
+      operationId: getReadLastAlertDate2
+      description: 'Folder: End user alerts.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralerts/page/{pageNum}:
+    get:
+      tags:
+      - Enduser Business Accounts
+      summary: Read a page of alerts
+      operationId: getReadAPageOfAlerts
+      description: 'Folder: End user alerts. Read a page of the most recent alerts.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralerts/search:
+    post:
+      tags:
+      - Enduser Business Accounts
+      summary: Search email within alerts
+      operationId: postSearchEmailWithinAlerts
+      description: 'Folder: End user alerts. Returns the first page of alerts for the email. Use the by page to get the next page.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                term:
+                  type: string
+                  description: Inclusive string search for the email in the alert
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralerts/search/page/{pageNum}:
+    post:
+      tags:
+      - Enduser Business Accounts
+      summary: Search email within alerts by page
+      operationId: postSearchEmailWithinAlertsByPage
+      description: 'Folder: End user alerts.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                term:
+                  type: string
+                  description: Inclusive string search for the email in the alert
+                hashpass:
+                  type: string
+                pubsort:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralerts/updateall:
+    put:
+      tags:
+      - Enduser Business Accounts
+      summary: Update all documents for an email
+      operationId: putUpdateAllDocumentsForAnEmail
+      description: 'Folder: End user alerts. Using an email to find and update alerts, bulk edit the flags on alerts, such as remediated and deleted.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: required.
+                deleted:
+                  type: string
+                  description: 'Required. The value must be true or false and key can be any of the following: remediated, deleted, passwordchanged, passwordunique, ato2fa, atouniquepass, atouniqueemail, idwatchlist, idcredit, fraudstolen, fraudfreeze, fraudirs'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralerts/{alertId}:
+    get:
+      tags:
+      - Enduser Business Accounts
+      summary: Read a document
+      operationId: getReadADocument10
+      description: 'Folder: End user alerts.'
+      parameters:
+      - name: alertId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+    put:
+      tags:
+      - Enduser Business Accounts
+      summary: Update a document
+      operationId: putUpdateADocument2
+      description: 'Folder: End user alerts.'
+      parameters:
+      - name: alertId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                remediated:
+                  type: string
+                  description: 'Required. The value must be true or false and key can be any of the following: remediated, deleted, passwordchanged, passwordunique, ato2fa, atouniquepass, atouniqueemail, idwatchlist, idcredit, fraudstolen, fraudfreeze, fraudirs'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralertscreds/page/{pageNum}:
+    get:
+      tags:
+      - Enduser Business Accounts
+      summary: Read page of credentials
+      operationId: getReadPageOfCredentials
+      description: 'Folder: End user alerts.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+    post:
+      tags:
+      - Enduser Business Accounts
+      summary: Post page of credentials with options
+      operationId: postPageOfCredentialsWithOptions
+      description: 'Folder: End user alerts.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                credsonly:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralertsleaks/page/{pageNum}:
+    get:
+      tags:
+      - Enduser Business Accounts
+      summary: Read a page of alerts and leaks
+      operationId: getReadAPageOfAlertsAndLeaks
+      description: 'Folder: End user alerts.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralertsleaks/page/{pageNum}/days/{number}:
+    get:
+      tags:
+      - Enduser Business Accounts
+      summary: Read a page of alerts and leaks for a number of previous days of alerts
+      operationId: getReadAPageOfAlertsAndLeaksForANumberOfPreviousDaysOfAlerts
+      description: 'Folder: End user alerts.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: number
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduserleaks:
+    post:
+      tags:
+      - Enduser Business Accounts
+      summary: Read a doc
+      operationId: postReadADoc
+      description: 'Folder: End user leak. Get a document by the document ID.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                _id:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduserwatchlist/count:
+    get:
+      tags:
+      - Enduser Business Accounts
+      summary: Get the count of documents
+      operationId: getTheCountOfDocuments5
+      description: 'Folder: End user watchlist. Get the count of watchlist items.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduserwatchlist/create:
+    post:
+      tags:
+      - Enduser Business Accounts
+      summary: Create a doc
+      operationId: postCreateADoc6
+      description: 'Folder: End user watchlist. Add a watchlist item to your watchlist. If using Dark Hash Collisions, put the hash in the email key and set the hashed key to true.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                tags:
+                  type: array
+            example:
+              email: steve@hacknotice.com
+              tags:
+              - tag 1
+              - tag 2
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduserwatchlist/page/{pageNum}:
+    get:
+      tags:
+      - Enduser Business Accounts
+      summary: Read a page of documents
+      operationId: getReadAPageOfDocuments7
+      description: 'Folder: End user watchlist. Read a page of watchlist items.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduserwatchlist/search:
+    post:
+      tags:
+      - Enduser Business Accounts
+      summary: Search for an email
+      operationId: postSearchForAnEmail
+      description: 'Folder: End user watchlist. Search your watchlist for an email address.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                term:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduserwatchlist/{watchlistId}:
+    get:
+      tags:
+      - Enduser Business Accounts
+      summary: Read a doc
+      operationId: getReadADoc10
+      description: 'Folder: End user watchlist. Get a document by the document ID.'
+      parameters:
+      - name: watchlistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+    delete:
+      tags:
+      - Enduser Business Accounts
+      summary: Delete a doc
+      operationId: deleteADoc8
+      description: 'Folder: End user watchlist. Remove a document by the document ID.'
+      parameters:
+      - name: watchlistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+components:
+  schemas:
+    Error:
+      type: object
+      description: HackNotice error envelope observed on the live API hosts.
+      properties:
+        message:
+          type: string
+          description: Human-readable error message, e.g. "Unauthorized user!" or "Not found".
+  securitySchemes:
+    jwtAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Session token from POST /auth/sign_in, sent as the literal prefix "JWT " followed by the token — e.g. Authorization: JWT <token>. Note this is HackNotice''s own scheme, not RFC 6750 Bearer.'
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: apikey
+      description: Per-account API key issued by HackNotice, sent in the lower-case "apikey" header alongside the JWT on most operations.
+    integrationKeyAuth:
+      type: apiKey
+      in: header
+      name: X-HackNotice-Integration-Key
+      description: Per-user HackNotice integration secret (hn_ik_ prefix). Single-header alternative to apikey + email + password; also the credential used by the HackNotice MCP server.

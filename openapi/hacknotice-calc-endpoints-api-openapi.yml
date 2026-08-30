@@ -1,0 +1,1387 @@
+openapi: 3.2.0
+info:
+  title: HackNotice Calc endpoints API
+  version: '2026-08-22'
+  summary: External threat-intelligence API for first-party, third-party and end-user breach monitoring, threat research and vendor assessments.
+  description: 'HackNotice''s REST API over its external threat-intelligence platform: credential and breach alerts for first-party domains, third-party vendors and end users; dark-web / hacker-forum research search; and AI-assisted vendor security assessments.
+
+
+    PROVENANCE: this document was DERIVED by API Evangelist from HackNotice''s own published Postman collection "HackNotice-API", reached at https://api-docs.hacknotice.com (HTTP 301 -> https://documenter.getpostman.com/view/806684/2sBXiri7pT), linked from HackNotice''s help centre article "API". Paths, methods, parameters, request bodies and tags are transcribed from that collection; nothing was invented. Concrete record ids in the collection''s example URLs were templated into path parameters, and every token-shaped example value was redacted.
+
+
+    HackNotice publishes a rate limit of 1 query per second, and states that API access is granted to approved accounts only after a 30-minute consultation call.'
+  termsOfService: https://hacknotice.com/businesstandc/
+  contact:
+    name: HackNotice Support
+    url: https://hacknotice.zendesk.com/hc/en-us
+    email: support@hacknotice.com
+  x-api-evangelist-derived-from: https://api-docs.hacknotice.com
+servers:
+- url: https://extensionapi.hacknotice.com
+  description: HackNotice production API host, as declared by HackNotice's own first-party n8n node (API_BASE_URL in credentials/HackNoticeApi.credentials.ts, github.com/HackNotice/n8n-nodes-hacknotice). The published Postman collection ships an internal {{url}} variable pointing at a developer VPN host, which is not the production base.
+security:
+- jwtAuth: []
+- apiKeyAuth: []
+tags:
+- name: Calc endpoints
+  description: Aggregate/rollup calculation endpoints for breaches, threat actors and per-service alerts.
+paths:
+  /breachcalcs/aggregatedates:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /breachcalcs/aggregatedates
+      operationId: postBreachcalcsAggregatedates
+      description: 'Folder: Breaches. Mongo $group aggregation that sums totals, per-NAICS counts, per-geo-region counts, and per-source counts over the matching docs. Body fields : same date/naics/georegion filters as /count , plus: csv (boolean, optional) — if truthy, response is a CSV download ( Content-Disposition: attachment; filename=breachcalcs.csv ); otherwise JSON. Response : array with one aggregated object containing total , totalIndustries , totalGeographies , naics11 .. naics99 , geoEurope .. geoMiddleEast , sourceSec .. sourceLeakreport .'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+                naics:
+                  type: string
+                naicsarray:
+                  type: array
+                georegions:
+                  type: string
+                georegionsarray:
+                  type: array
+                csv:
+                  type: boolean
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+              naics: ''
+              naicsarray: []
+              georegions: ''
+              georegionsarray: []
+              csv: false
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /breachcalcs/count:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /breachcalcs/count
+      operationId: postBreachcalcsCount
+      description: 'Folder: Breaches. Returns the count of breach-landscape records matching the filter. Body fields startdate (string, ISO date) — required together with enddate to filter by date range. If either is empty, the date filter is skipped. enddate (string, ISO date) naics (string|number, optional) — single NAICS code filter. If absent, exclusivenaics is set to null (i.e. "all NAICS"). naicsarray (array, optional) — NAICS $in filter; overrides naics when present. georegions (string, optional) — single geo-region filter. georegionsarray (array, optional) — geo-region $in filter; overrides georegions when present. Response : integer count.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+                naics:
+                  type: string
+                naicsarray:
+                  type: array
+                georegions:
+                  type: string
+                georegionsarray:
+                  type: array
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+              naics: ''
+              naicsarray: []
+              georegions: ''
+              georegionsarray: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /breachcalcs/listdates:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /breachcalcs/listdates
+      operationId: postBreachcalcsListdates
+      description: 'Folder: Breaches. Unpaginated list of breach-landscape records matching the filter, sorted by date desc. Body fields : same as /count . Response : array of breach-landscape records.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+                naics:
+                  type: string
+                naicsarray:
+                  type: array
+                georegions:
+                  type: string
+                georegionsarray:
+                  type: array
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+              naics: ''
+              naicsarray: []
+              georegions: ''
+              georegionsarray: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /breachcalcs/page/{pageNum}:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /breachcalcs/page/:pageNum
+      operationId: postBreachcalcsPagePagenum
+      description: 'Folder: Breaches. Paginated list of breach-landscape records (50 per page, sorted by date desc). Path params pageNum (integer) — zero-indexed page. Body fields : naics , naicsarray , georegions , georegionsarray — same semantics as /count . Note: this handler does not apply a date filter. Response : array of breach-landscape records.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                naics:
+                  type: string
+                naicsarray:
+                  type: array
+                georegions:
+                  type: string
+                georegionsarray:
+                  type: array
+            example:
+              naics: ''
+              naicsarray: []
+              georegions: ''
+              georegionsarray: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /breachcalcs/{docId}:
+    get:
+      tags:
+      - Calc endpoints
+      summary: GET /breachcalcs/:docId
+      operationId: getBreachcalcsDocid
+      description: 'Folder: Breaches. Fetch a single breach-landscape record by _id . Path params docId — Mongo ObjectId of the breach-landscape record. Response : the breach-landscape record.'
+      parameters:
+      - name: docId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalertcalcs/aggregatedates:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /domainalertcalcs/aggregatedates
+      operationId: postDomainalertcalcsAggregatedates
+      description: 'Folder: First Party Alerts. Aggregates totalcreddump , totalinfostealer , totaltags , totaltaggroups , totalleakfiles , total , plus rolled-up taggroups and per-leakfile counts over the matching docs. Customer types accepted: domain , research , enduser .'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+                domainwatchlist_id:
+                  type: string
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+              domainwatchlist_id: ''
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalertcalcs/count:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /domainalertcalcs/count
+      operationId: postDomainalertcalcsCount
+      description: 'Folder: First Party Alerts. Count of domain credential-exposure records for the authenticated customer. Body fields startdate / enddate (string, ISO date, optional pair) — date range filter. domainwatchlist_id (string, optional) — filter to a single domain watchlist. Response : integer count.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+                domainwatchlist_id:
+                  type: string
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+              domainwatchlist_id: ''
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalertcalcs/listdates:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /domainalertcalcs/listdates
+      operationId: postDomainalertcalcsListdates
+      description: 'Folder: First Party Alerts. Unpaginated list, sorted by date desc, for the authenticated customer.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+                domainwatchlist_id:
+                  type: string
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+              domainwatchlist_id: ''
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalertcalcs/page/{pageNum}:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /domainalertcalcs/page/:pageNum
+      operationId: postDomainalertcalcsPagePagenum
+      description: 'Folder: First Party Alerts. Paginated list (50 per page) for the authenticated customer.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                domainwatchlist_id:
+                  type: string
+            example:
+              domainwatchlist_id: ''
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalertcalcs/stats/aggregatedates:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /domainalertcalcs/stats/aggregatedates
+      operationId: postDomainalertcalcsStatsAggregatedates
+      description: 'Folder: First Party Alerts. Stats-flavored aggregation over a preset domain-watchlist changeset . Body fields startdate / enddate — date range. changeset (string) — preset name (e.g. "USA" ) selecting a server-side group of domain watchlists; without it the aggregation has no $in set.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+                changeset:
+                  type: string
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+              changeset: USA
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalertcalcs/{docId}:
+    get:
+      tags:
+      - Calc endpoints
+      summary: GET /domainalertcalcs/:docId
+      operationId: getDomainalertcalcsDocid
+      description: 'Folder: First Party Alerts. Fetch a single domain credential-exposure record by _id .'
+      parameters:
+      - name: docId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralertcalcs/aggregatedates:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /enduseralertcalcs/aggregatedates
+      operationId: postEnduseralertcalcsAggregatedates
+      description: 'Folder: End User Alerts. Aggregation over the matching employee credential-exposure records for the authenticated customer.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralertcalcs/count:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /enduseralertcalcs/count
+      operationId: postEnduseralertcalcsCount
+      description: 'Folder: End User Alerts. Count of employee credential-exposure records for the authenticated customer. Body fields startdate / enddate (string, ISO date, optional pair) — date range. Response : integer count.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralertcalcs/listdates:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /enduseralertcalcs/listdates
+      operationId: postEnduseralertcalcsListdates
+      description: 'Folder: End User Alerts. Unpaginated list, sorted by date desc, for the authenticated customer.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralertcalcs/page/{pageNum}:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /enduseralertcalcs/page/:pageNum
+      operationId: postEnduseralertcalcsPagePagenum
+      description: 'Folder: End User Alerts. Paginated list (50 per page) for the authenticated customer.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+            example: {}
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /enduseralertcalcs/{docId}:
+    get:
+      tags:
+      - Calc endpoints
+      summary: GET /enduseralertcalcs/:docId
+      operationId: getEnduseralertcalcsDocid
+      description: 'Folder: End User Alerts. Fetch a single employee credential-exposure record by _id .'
+      parameters:
+      - name: docId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /hackalertcalcs/aggregatedates:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /hackalertcalcs/aggregatedates
+      operationId: postHackalertcalcsAggregatedates
+      description: 'Folder: Third Party Alerts. $group aggregation over the matching docs for the authenticated customer.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+                naics:
+                  type: string
+                naicsarray:
+                  type: array
+                georegions:
+                  type: string
+                georegionsarray:
+                  type: array
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+              naics: ''
+              naicsarray: []
+              georegions: ''
+              georegionsarray: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /hackalertcalcs/count:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /hackalertcalcs/count
+      operationId: postHackalertcalcsCount
+      description: 'Folder: Third Party Alerts. Count of hack/breach exposure records for the authenticated customer. Body fields : same as breachcalcs /count . Response : integer count.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+                naics:
+                  type: string
+                naicsarray:
+                  type: array
+                georegions:
+                  type: string
+                georegionsarray:
+                  type: array
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+              naics: ''
+              naicsarray: []
+              georegions: ''
+              georegionsarray: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /hackalertcalcs/listdates:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /hackalertcalcs/listdates
+      operationId: postHackalertcalcsListdates
+      description: 'Folder: Third Party Alerts. Unpaginated list, sorted by date desc, for the authenticated customer.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+                naics:
+                  type: string
+                naicsarray:
+                  type: array
+                georegions:
+                  type: string
+                georegionsarray:
+                  type: array
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+              naics: ''
+              naicsarray: []
+              georegions: ''
+              georegionsarray: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /hackalertcalcs/page/{pageNum}:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /hackalertcalcs/page/:pageNum
+      operationId: postHackalertcalcsPagePagenum
+      description: 'Folder: Third Party Alerts. Paginated list (50 per page) for the authenticated customer.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                naics:
+                  type: string
+                naicsarray:
+                  type: array
+                georegions:
+                  type: string
+                georegionsarray:
+                  type: array
+            example:
+              naics: ''
+              naicsarray: []
+              georegions: ''
+              georegionsarray: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /hackalertcalcs/{docId}:
+    get:
+      tags:
+      - Calc endpoints
+      summary: GET /hackalertcalcs/:docId
+      operationId: getHackalertcalcsDocid
+      description: 'Folder: Third Party Alerts. Fetch a single hack/breach exposure record by _id .'
+      parameters:
+      - name: docId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /threatactorcalcs/aggregatedates:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /threatactorcalcs/aggregatedates
+      operationId: postThreatactorcalcsAggregatedates
+      description: 'Folder: Threat Actors. Mongo $group aggregation over the matching docs. Body fields : same as /count , plus: harvesterarray (array, optional) — harvester $in filter. csv / exportcsv (boolean, optional) — if truthy, response is a CSV download. Response : aggregated totals (per-NAICS, per-geo-region, etc.) similar to breachcalcs /aggregatedates .'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+                naics:
+                  type: string
+                naicsarray:
+                  type: array
+                georegions:
+                  type: string
+                georegionsarray:
+                  type: array
+                harvester:
+                  type: string
+                harvesterarray:
+                  type: array
+                csv:
+                  type: boolean
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+              naics: ''
+              naicsarray: []
+              georegions: ''
+              georegionsarray: []
+              harvester: ''
+              harvesterarray: []
+              csv: false
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /threatactorcalcs/aggregatedistinct:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /threatactorcalcs/aggregatedistinct
+      operationId: postThreatactorcalcsAggregatedistinct
+      description: 'Folder: Threat Actors. For each distinct harvester in the window, returns the date-range aggregate. Internally calls list_distinct then iterates per harvester. Body fields : date range filters. Response : array of per-harvester aggregate objects.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /threatactorcalcs/count:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /threatactorcalcs/count
+      operationId: postThreatactorcalcsCount
+      description: 'Folder: Threat Actors. Count of threat-actor activity records matching the filter. Body fields : same date/naics/georegion filters as breachcalcs, plus: harvester (string, optional) — filter to a single harvester name. Response : integer count.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+                naics:
+                  type: string
+                naicsarray:
+                  type: array
+                georegions:
+                  type: string
+                georegionsarray:
+                  type: array
+                harvester:
+                  type: string
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+              naics: ''
+              naicsarray: []
+              georegions: ''
+              georegionsarray: []
+              harvester: ''
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /threatactorcalcs/distinct:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /threatactorcalcs/distinct
+      operationId: postThreatactorcalcsDistinct
+      description: 'Folder: Threat Actors. Returns the distinct list of harvesters seen over the filter window. Body fields : date range filters. Response : array of harvester identifiers (strings).'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /threatactorcalcs/listdates:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /threatactorcalcs/listdates
+      operationId: postThreatactorcalcsListdates
+      description: 'Folder: Threat Actors. Unpaginated list of threat-actor activity records matching the filter, sorted by date desc. Body fields : same as /count . Response : array of threat-actor activity records.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+                naics:
+                  type: string
+                naicsarray:
+                  type: array
+                georegions:
+                  type: string
+                georegionsarray:
+                  type: array
+                harvester:
+                  type: string
+            example:
+              startdate: '2025-04-01'
+              enddate: '2025-05-01'
+              naics: ''
+              naicsarray: []
+              georegions: ''
+              georegionsarray: []
+              harvester: ''
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /threatactorcalcs/page/{pageNum}:
+    post:
+      tags:
+      - Calc endpoints
+      summary: POST /threatactorcalcs/page/:pageNum
+      operationId: postThreatactorcalcsPagePagenum
+      description: 'Folder: Threat Actors. Paginated list (50 per page, sorted by date desc). Path params pageNum (integer) Body fields : same as /count minus date range. harvester optional. Response : array of threat-actor activity records.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                naics:
+                  type: string
+                naicsarray:
+                  type: array
+                georegions:
+                  type: string
+                georegionsarray:
+                  type: array
+                harvester:
+                  type: string
+            example:
+              naics: ''
+              naicsarray: []
+              georegions: ''
+              georegionsarray: []
+              harvester: ''
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /threatactorcalcs/{docId}:
+    get:
+      tags:
+      - Calc endpoints
+      summary: GET /threatactorcalcs/:docId
+      operationId: getThreatactorcalcsDocid
+      description: 'Folder: Threat Actors. Fetch a single threat-actor activity record by _id .'
+      parameters:
+      - name: docId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+components:
+  schemas:
+    Error:
+      type: object
+      description: HackNotice error envelope observed on the live API hosts.
+      properties:
+        message:
+          type: string
+          description: Human-readable error message, e.g. "Unauthorized user!" or "Not found".
+  securitySchemes:
+    jwtAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Session token from POST /auth/sign_in, sent as the literal prefix "JWT " followed by the token — e.g. Authorization: JWT <token>. Note this is HackNotice''s own scheme, not RFC 6750 Bearer.'
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: apikey
+      description: Per-account API key issued by HackNotice, sent in the lower-case "apikey" header alongside the JWT on most operations.
+    integrationKeyAuth:
+      type: apiKey
+      in: header
+      name: X-HackNotice-Integration-Key
+      description: Per-user HackNotice integration secret (hn_ik_ prefix). Single-header alternative to apikey + email + password; also the credential used by the HackNotice MCP server.

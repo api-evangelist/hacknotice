@@ -1,0 +1,1309 @@
+openapi: 3.2.0
+info:
+  title: HackNotice Domain Business Accounts API
+  version: '2026-08-22'
+  summary: External threat-intelligence API for first-party, third-party and end-user breach monitoring, threat research and vendor assessments.
+  description: 'HackNotice''s REST API over its external threat-intelligence platform: credential and breach alerts for first-party domains, third-party vendors and end users; dark-web / hacker-forum research search; and AI-assisted vendor security assessments.
+
+
+    PROVENANCE: this document was DERIVED by API Evangelist from HackNotice''s own published Postman collection "HackNotice-API", reached at https://api-docs.hacknotice.com (HTTP 301 -> https://documenter.getpostman.com/view/806684/2sBXiri7pT), linked from HackNotice''s help centre article "API". Paths, methods, parameters, request bodies and tags are transcribed from that collection; nothing was invented. Concrete record ids in the collection''s example URLs were templated into path parameters, and every token-shaped example value was redacted.
+
+
+    HackNotice publishes a rate limit of 1 query per second, and states that API access is granted to approved accounts only after a 30-minute consultation call.'
+  termsOfService: https://hacknotice.com/businesstandc/
+  contact:
+    name: HackNotice Support
+    url: https://hacknotice.zendesk.com/hc/en-us
+    email: support@hacknotice.com
+  x-api-evangelist-derived-from: https://api-docs.hacknotice.com
+servers:
+- url: https://extensionapi.hacknotice.com
+  description: HackNotice production API host, as declared by HackNotice's own first-party n8n node (API_BASE_URL in credentials/HackNoticeApi.credentials.ts, github.com/HackNotice/n8n-nodes-hacknotice). The published Postman collection ships an internal {{url}} variable pointing at a developer VPN host, which is not the production base.
+security:
+- jwtAuth: []
+- apiKeyAuth: []
+tags:
+- name: Domain Business Accounts
+  description: 'First-party domain monitoring: domain watchlists, domain leaks, domain alerts and downloads.'
+paths:
+  /domainalerts:
+    put:
+      tags:
+      - Domain Business Accounts
+      summary: Fix domainalerts for a list of alert  _ids
+      operationId: putFixDomainalertsForAListOfAlertIds
+      description: 'Folder: Domainalerts.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                alerts:
+                  type: array
+            example:
+              alerts:
+              - 5e37602b8d36ce02cbafa505
+              - 5e3646ff8d36ce02cbafa09f
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalerts/count:
+    post:
+      tags:
+      - Domain Business Accounts
+      summary: Read count for an account
+      operationId: postReadCountForAnAccount
+      description: 'Folder: Domainalerts. Read the alert count across all domains.'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalerts/deleted/page/{pageNum}:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: Read page of deleted alerts for an account
+      operationId: getReadPageOfDeletedAlertsForAnAccount
+      description: 'Folder: Domainalerts. Read a page of the most recent alerts that have the deleted flag set to true.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalerts/lastdate:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: Read alerts last date
+      operationId: getReadAlertsLastDate
+      description: 'Folder: Domainalerts.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalerts/page/{pageNum}:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: Read page for an account
+      operationId: getReadPageForAnAccount
+      description: 'Folder: Domainalerts. Read the most recent alerts for a user across all domains.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalerts/search:
+    post:
+      tags:
+      - Domain Business Accounts
+      summary: Search hit value
+      operationId: postSearchHitValue
+      description: 'Folder: Domainalerts.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                term:
+                  type: string
+                  description: Inclusive string search for the value in the domain or title
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalerts/updatedomain/{documentId}:
+    put:
+      tags:
+      - Domain Business Accounts
+      summary: Update all alerts for a domain
+      operationId: putUpdateAllAlertsForADomain
+      description: 'Folder: Domainalerts. Using the domainwatchlist_id for a domain to find and update alerts, bulk edit the flags on alerts, such as remediated and deleted.'
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                deleted:
+                  type: string
+                  description: 'Required. The value must be true or false and key can be any of the following: remediated, deleted, passwordchanged, passwordunique, ato2fa, atouniquepass, atouniqueemail, idwatchlist, idcredit, fraudstolen, fraudfreeze, fraudirs'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalerts/updateemail/{documentId}:
+    put:
+      tags:
+      - Domain Business Accounts
+      summary: Update all alerts for a domain and an email
+      operationId: putUpdateAllAlertsForADomainAndAnEmail
+      description: 'Folder: Domainalerts. Using the email and domainwatchlist_id for a domain to find and update alerts, bulk edit the flags on alerts, such as remediated and deleted.'
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Required.
+                deleted:
+                  type: string
+                  description: 'Required. The value must be true or false and key can be any of the following: remediated, deleted, passwordchanged, passwordunique, ato2fa, atouniquepass, atouniqueemail, idwatchlist, idcredit, fraudstolen, fraudfreeze, fraudirs'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalerts/{alertId}:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: Read an alert
+      operationId: getReadAnAlert
+      description: 'Folder: Domainalerts.'
+      parameters:
+      - name: alertId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+    put:
+      tags:
+      - Domain Business Accounts
+      summary: Update an alert
+      operationId: putUpdateAnAlert
+      description: 'Folder: Domainalerts.'
+      parameters:
+      - name: alertId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                deleted:
+                  type: string
+                  description: 'Required. The value must be true or false and key can be any of the following: remediated, deleted, passwordchanged, passwordunique, ato2fa, atouniquepass, atouniqueemail, idwatchlist, idcredit, fraudstolen, fraudfreeze, fraudirs'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalerts/{alertId}/count:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: Read count for a domain
+      operationId: getReadCountForADomain
+      description: 'Folder: Domainalerts.'
+      parameters:
+      - name: alertId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalerts/{alertId}/lastdate:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: Read alerts last date for a domain
+      operationId: getReadAlertsLastDateForADomain
+      description: 'Folder: Domainalerts.'
+      parameters:
+      - name: alertId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalerts/{alertId}/page/{pageNum}:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: Read page for a domain
+      operationId: getReadPageForADomain
+      description: 'Folder: Domainalerts.'
+      parameters:
+      - name: alertId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+    post:
+      tags:
+      - Domain Business Accounts
+      summary: Read page for a domain
+      operationId: postReadPageForADomain
+      description: 'Folder: Domainalerts.'
+      parameters:
+      - name: alertId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                credsonly:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalerts/{alertId}/search:
+    post:
+      tags:
+      - Domain Business Accounts
+      summary: Search hit value within a domain
+      operationId: postSearchHitValueWithinADomain
+      description: 'Folder: Domainalerts.'
+      parameters:
+      - name: alertId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                term:
+                  type: string
+                  description: Inclusive string search for the email in the alert
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalerts/{alertId}/{documentId}:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: Read an alert for a domain
+      operationId: getReadAnAlertForADomain
+      description: 'Folder: Domainalerts.'
+      parameters:
+      - name: alertId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+    put:
+      tags:
+      - Domain Business Accounts
+      summary: Update an alert for a domain
+      operationId: putUpdateAnAlertForADomain
+      description: 'Folder: Domainalerts.'
+      parameters:
+      - name: alertId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                remediated:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalertscreds/page/{pageNum}:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: Read page of credentials for an account
+      operationId: getReadPageOfCredentialsForAnAccount
+      description: 'Folder: Domainalerts. GET for a page of credentials for all of the domains for a user. If email and password exist, they will be available through the values email and password. The value of passwordType will either be plaintext, MD5, or SHA1, if it exists.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalertscreds/{documentId}/page/{pageNum}:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: Read a page of credentials for a domain
+      operationId: getReadAPageOfCredentialsForADomain
+      description: 'Folder: Domainalerts. Read a page of credentials, with the parameters of email and password for a domain.'
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalertsleaks/page/{pageNum}:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: Read page of alerts and leaks for an account
+      operationId: getReadPageOfAlertsAndLeaksForAnAccount
+      description: 'Folder: Domainalerts.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainalertsleaks/{documentId}/page/{pageNum}:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: Read a page of alerts and leaks for a domain
+      operationId: getReadAPageOfAlertsAndLeaksForADomain
+      description: 'Folder: Domainalerts.'
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainleaks/AYrCzi8pA0BWMJTgGuTGTg3Vxx4%3D:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: Read a doc
+      operationId: getReadADoc9
+      description: 'Folder: Domainleak. Get a document by the document ID.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainwatchlist:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: Read documents
+      operationId: getReadDocuments
+      description: 'Folder: Domainwatchlist. Read all domains.'
+      parameters:
+      - name: X-HackNotice-Integration-Key
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainwatchlist/count:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: Get the count of all documents
+      operationId: getTheCountOfAllDocuments
+      description: 'Folder: Domainwatchlist. Read all domains.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainwatchlist/page/{pageNum}:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: Read a page
+      operationId: getReadAPage
+      description: 'Folder: Domainwatchlist. Read a page of domains. Pages are limited to 10 documents per page for domainwatchlist.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+    post:
+      tags:
+      - Domain Business Accounts
+      summary: Read a page with parameters
+      operationId: postReadAPageWithParameters
+      description: 'Folder: Domainwatchlist. Read a page of domains. Pages are limited to 10 documents per page for domainwatchlist.'
+      parameters:
+      - name: pageNum
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sort:
+                  type: string
+            example:
+              sort: count
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainwatchlist/search:
+    post:
+      tags:
+      - Domain Business Accounts
+      summary: Search domain within watchlist
+      operationId: postSearchDomainWithinWatchlist
+      description: 'Folder: Domainwatchlist.'
+      parameters:
+      - name: X-HackNotice-Integration-Key
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                term:
+                  type: string
+                hoveredDate:
+                  type: string
+                fromDate:
+                  type: string
+                toDate:
+                  type: string
+            example:
+              term: example
+              hoveredDate: null
+              fromDate: '2026-01-01'
+              toDate: '2026-05-07'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /domainwatchlist/{watchlistId}:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: Read a doc
+      operationId: getReadADoc8
+      description: 'Folder: Domainwatchlist. Get a document by the document ID.'
+      parameters:
+      - name: watchlistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /downloads/domain/all/csv:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: create csv for all domains
+      operationId: getCreateCsvForAllDomains
+      description: 'Folder: Downloads.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+    post:
+      tags:
+      - Domain Business Accounts
+      summary: create csv for all domains
+      operationId: postCreateCsvForAllDomains
+      description: 'Folder: Downloads.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                strongonly:
+                  type: boolean
+            example:
+              strongonly: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /downloads/domain/all/csv/{documentId}:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: create csv for domain
+      operationId: getCreateCsvForDomain
+      description: 'Folder: Downloads.'
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+    post:
+      tags:
+      - Domain Business Accounts
+      summary: create csv for domain Copy
+      operationId: postCreateCsvForDomainCopy
+      description: 'Folder: Downloads.'
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                strongonly:
+                  type: boolean
+            example:
+              strongonly: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /downloads/domain/thirty/csv:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: create csv for all domains for the last 30 days
+      operationId: getCreateCsvForAllDomainsForTheLast30Days
+      description: 'Folder: Downloads.'
+      parameters:
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+  /downloads/domain/thirty/csv/{documentId}:
+    get:
+      tags:
+      - Domain Business Accounts
+      summary: create csv for domain last 30 days
+      operationId: getCreateCsvForDomainLast30Days
+      description: 'Folder: Downloads.'
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: apikey
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized — missing or invalid JWT / API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - jwtAuth: []
+      - apiKeyAuth: []
+components:
+  schemas:
+    Error:
+      type: object
+      description: HackNotice error envelope observed on the live API hosts.
+      properties:
+        message:
+          type: string
+          description: Human-readable error message, e.g. "Unauthorized user!" or "Not found".
+  securitySchemes:
+    jwtAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Session token from POST /auth/sign_in, sent as the literal prefix "JWT " followed by the token — e.g. Authorization: JWT <token>. Note this is HackNotice''s own scheme, not RFC 6750 Bearer.'
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: apikey
+      description: Per-account API key issued by HackNotice, sent in the lower-case "apikey" header alongside the JWT on most operations.
+    integrationKeyAuth:
+      type: apiKey
+      in: header
+      name: X-HackNotice-Integration-Key
+      description: Per-user HackNotice integration secret (hn_ik_ prefix). Single-header alternative to apikey + email + password; also the credential used by the HackNotice MCP server.
