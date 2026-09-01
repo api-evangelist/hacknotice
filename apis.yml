@@ -302,6 +302,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: License
+  name: MIT
+  url: https://github.com/HackNotice/n8n-nodes-hacknotice-mcp/blob/main/LICENSE
 - type: DomainSecurity
   url: security/hacknotice-domain-security.yml
 - type: Website
