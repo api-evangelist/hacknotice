@@ -22,6 +22,21 @@ deliveryModel:
   - repository-unlicensed
   generated: '2026-08-28'
   method: derived
+accessModel:
+  pricing: paid
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Paid
+  confidence: high
+  source:
+  - plans
+  - authentication
+  - rate-limits
+  - security
+  generated: '2026-09-03'
+  method: derived
 image: https://hacknotice.com/wp-content/uploads/2022/12/favicon.png
 url: https://raw.githubusercontent.com/api-evangelist/hacknotice/refs/heads/main/apis.yml
 x-type: company
