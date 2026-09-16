@@ -1,14 +1,15 @@
 aid: hacknotice
 name: HackNotice
-description: 'HackNotice is an external threat-intelligence and cyber-risk platform founded in 2018 and headquartered
-  in Austin, Texas. It continuously collects intelligence from ransomware groups, infostealer malware logs, data
-  breaches, dark-web marketplaces, hacker forums and public disclosures, then matches that intelligence against the
-  domains, employees, customers and vendors an organization asks it to watch. The product is organized around four
-  monitoring services — first-party domain monitoring, third-party vendor risk monitoring, end-user credential
-  monitoring, and threat research and investigations — plus AI-assisted vendor security assessments. HackNotice
-  exposes this surface programmatically through a REST API documented as a public Postman collection at
-  api-docs.hacknotice.com, a remote Model Context Protocol server at mcp.hacknotice.com whose tool catalogue answers
-  anonymously, first-party n8n automation nodes on npm, and webhook, Splunk HEC and SIEM/SOAR alert delivery.'
+description: HackNotice is an external threat-intelligence and cyber-risk platform founded in 2018 and
+  headquartered in Austin, Texas. It continuously collects intelligence from ransomware groups, infostealer
+  malware logs, data breaches, dark-web marketplaces, hacker forums and public disclosures, then matches
+  that intelligence against the domains, employees, customers and vendors an organization asks it to watch.
+  The product is organized around four monitoring services — first-party domain monitoring, third-party
+  vendor risk monitoring, end-user credential monitoring, and threat research and investigations — plus
+  AI-assisted vendor security assessments. HackNotice exposes this surface programmatically through a
+  REST API documented as a public Postman collection at api-docs.hacknotice.com, a remote Model Context
+  Protocol server at mcp.hacknotice.com whose tool catalogue answers anonymously, first-party n8n automation
+  nodes on npm, and webhook, Splunk HEC and SIEM/SOAR alert delivery.
 deliveryModel:
   model: unknown
   open_source: unknown
@@ -43,7 +44,7 @@ x-type: company
 x-source: harvest:secondary-market
 specificationVersion: '0.20'
 created: '2026-08-22'
-modified: '2026-08-22'
+modified: '2026-09-16'
 tags:
 - Company
 - Security
@@ -77,12 +78,11 @@ tags_raw:
 apis:
 - aid: hacknotice:hacknotice-mcp
   name: HackNotice MCP Server
-  description: >-
-    Remote Model Context Protocol server operated by HackNotice, speaking JSON-RPC 2.0 over Streamable
-    HTTP at https://mcp.hacknotice.com:13330/mcp. It publishes 80 tools across third-party, first-party,
-    end-user, research and assessment groups, plus cross-cutting global-breach, exposure, chatter, credential-leak,
-    leaked-file and correlated-leak search. tools/list and initialize answer anonymously, so every tool
-    inputSchema is public; tools/call is gated on a per-user X-HackNotice-Integration-Key.
+  description: Remote Model Context Protocol server operated by HackNotice, speaking JSON-RPC 2.0 over
+    Streamable HTTP at https://mcp.hacknotice.com:13330/mcp. It publishes 80 tools across third-party,
+    first-party, end-user, research and assessment groups, plus cross-cutting global-breach, exposure,
+    chatter, credential-leak, leaked-file and correlated-leak search. tools/list and initialize answer
+    anonymously, so every tool inputSchema is public; tools/call is gated on a per-user X-HackNotice-Integration-Key.
   humanURL: https://github.com/HackNotice/n8n-nodes-hacknotice-mcp
   baseURL: https://mcp.hacknotice.com:13330/mcp
   tags:
@@ -125,9 +125,8 @@ apis:
     url: conventions/hacknotice-conventions.yml
 - aid: hacknotice:hacknotice-all-business-accounts-api
   name: HackNotice All Business Accounts API
-  description: >-
-    Authentication, leak/leakfile search, customer records, metrics, habits, downloads, utilities and
-    item notes shared by every business account.
+  description: Authentication, leak/leakfile search, customer records, metrics, habits, downloads, utilities
+    and item notes shared by every business account.
   humanURL: https://api-docs.hacknotice.com
   baseURL: https://extensionapi.hacknotice.com
   tags:
@@ -153,8 +152,7 @@ apis:
     url: conventions/hacknotice-conventions.yml
 - aid: hacknotice:hacknotice-calc-endpoints-api
   name: HackNotice Calc endpoints API
-  description: >-
-    Aggregate/rollup calculation endpoints for breaches, threat actors and per-service alerts.
+  description: Aggregate/rollup calculation endpoints for breaches, threat actors and per-service alerts.
   humanURL: https://api-docs.hacknotice.com
   baseURL: https://extensionapi.hacknotice.com
   tags:
@@ -180,8 +178,8 @@ apis:
     url: conventions/hacknotice-conventions.yml
 - aid: hacknotice:hacknotice-deprecated-api
   name: HackNotice Deprecated API
-  description: >-
-    Endpoints HackNotice groups as deprecated in its published collection (dark hash alerts, Teams accounts).
+  description: Endpoints HackNotice groups as deprecated in its published collection (dark hash alerts,
+    Teams accounts).
   humanURL: https://api-docs.hacknotice.com
   baseURL: https://extensionapi.hacknotice.com
   tags:
@@ -207,8 +205,7 @@ apis:
     url: conventions/hacknotice-conventions.yml
 - aid: hacknotice:hacknotice-domain-business-accounts-api
   name: HackNotice Domain Business Accounts API
-  description: >-
-    First-party domain monitoring: domain watchlists, domain leaks, domain alerts and downloads.
+  description: 'First-party domain monitoring: domain watchlists, domain leaks, domain alerts and downloads.'
   humanURL: https://api-docs.hacknotice.com
   baseURL: https://extensionapi.hacknotice.com
   tags:
@@ -286,8 +283,8 @@ apis:
     url: conventions/hacknotice-conventions.yml
 - aid: hacknotice:hacknotice-third-party-accounts-api
   name: HackNotice Third Party Accounts API
-  description: >-
-    Third-party vendor monitoring: hacks, hack updates, watchlists, alerts and vendor security assessments.
+  description: 'Third-party vendor monitoring: hacks, hack updates, watchlists, alerts and vendor security
+    assessments.'
   humanURL: https://api-docs.hacknotice.com
   baseURL: https://extensionapi.hacknotice.com
   tags:
@@ -355,7 +352,7 @@ common:
 - type: Postman
   url: https://api-docs.hacknotice.com
 - type: OpenAPI
-  url: openapi/hacknotice-openapi.yml
+  url: openapi/_original/hacknotice-openapi.yml
 - type: MCPServer
   url: mcp/hacknotice-mcp.yml
 - type: ToolCrosswalk
