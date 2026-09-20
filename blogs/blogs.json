@@ -3,10 +3,10 @@
   "feeds": [
     {
       "source": "https://hacknotice.com/category/blog/",
-      "feed_url": "https://hacknotice.com/category/blog/",
+      "feed_url": "https://hacknotice.com/category/blog/blog/feed/",
       "title": "",
       "saved": 0,
-      "method": "none"
+      "method": "discovered"
     },
     {
       "source": "https://hacknotice.zendesk.com/hc/en-us",
@@ -23,8 +23,8 @@
       "method": "feed"
     }
   ],
-  "post_count": 40,
-  "fetched": "2026-09-13T13:00:00Z",
+  "post_count": 50,
+  "fetched": "2026-09-19T20:17:39Z",
   "feed_nature": "undetermined",
   "feed_nature_basis": null,
   "feed_nature_note": "Whether these posts are the vendor publishing or its support community, decided on the URL path grammar of the saved posts -- not the hostname, which carries both on Khoros, and not author diversity, which flags large vendor blogs as forums. 'undetermined' means undetermined."
