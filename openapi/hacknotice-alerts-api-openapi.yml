@@ -3,13 +3,7 @@ info:
   title: HackNotice Alerts API
   version: '2026-08-22'
   summary: External threat-intelligence API for first-party, third-party and end-user breach monitoring, threat research and vendor assessments.
-  description: 'HackNotice''s REST API over its external threat-intelligence platform: credential and breach alerts for first-party domains, third-party vendors and end users; dark-web / hacker-forum research search; and AI-assisted vendor security assessments.
-
-
-    PROVENANCE: this document was DERIVED by API Evangelist from HackNotice''s own published Postman collection "HackNotice-API", reached at https://api-docs.hacknotice.com (HTTP 301 -> https://documenter.getpostman.com/view/806684/2sBXiri7pT), linked from HackNotice''s help centre article "API". Paths, methods, parameters, request bodies and tags are transcribed from that collection; nothing was invented. Concrete record ids in the collection''s example URLs were templated into path parameters, and every token-shaped example value was redacted.
-
-
-    HackNotice publishes a rate limit of 1 query per second, and states that API access is granted to approved accounts only after a 30-minute consultation call.'
+  description: 'HackNotice''s REST API over its external threat-intelligence platform: credential and breach alerts for first-party domains, third-party vendors and end users; dark-web / hacker-forum research search; and AI-assisted vendor security assessments.'
   termsOfService: https://hacknotice.com/businesstandc/
   contact:
     name: HackNotice Support
