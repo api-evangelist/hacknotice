@@ -53,8 +53,7 @@ tags:
 - Dark Web Monitoring
 - Data Breaches
 - Credential Monitoring
-- Third-Party Risk
-- Vendor Risk Management
+- Third-Party Risk Management
 - Vulnerability Management
 - Ransomware
 - Security Assessments
@@ -75,6 +74,7 @@ tags_raw:
 - Security Assessments
 - Alerts
 - Monitoring
+- Third-Party Risk
 apis:
 - aid: hacknotice:hacknotice-mcp
   name: HackNotice MCP Server
