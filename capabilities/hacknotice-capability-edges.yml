@@ -1,0 +1,46 @@
+slug: hacknotice
+provider: HackNotice
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 3
+edges:
+- tag: Alerts
+  spec_file: hacknotice-alerts-api-openapi.yml
+  capability_id: BC-620.30
+  capability_id_l1: BC-620
+  capability_name: Threat Detection & Response Management
+  confidence: 0.85
+  evidence: '''credential and breach alerts for first-party domains, third-party vendors and end users;
+    dark-web / hacker-forum research search'', ''Read first-party alerts page'''
+  reason: Operations deliver external threat-intelligence alerts on breaches and leaked credentials plus
+    dark-web research search — threat detection and response within cybersecurity management, not financial-crime
+    or monitoring alerting.
+- tag: Domain Business Accounts
+  spec_file: hacknotice-domain-business-accounts-api-openapi.yml
+  capability_id: BC-620.30
+  capability_id_l1: BC-620
+  capability_name: Threat Detection & Response Management
+  confidence: 0.8
+  evidence: GET /domainalerts/{alertId} Read an alert; PUT /domainalerts/updatedomain/{documentId} Update
+    all alerts for a domain
+  reason: These operations manage credential/breach alerts raised against the organisation's own monitored
+    domains — detection and triage of external security threats, i.e. Threat Detection & Response Management.
+- tag: Enduser Business Accounts
+  spec_file: hacknotice-enduser-business-accounts-api-openapi.yml
+  capability_id: BC-620.30
+  capability_id_l1: BC-620
+  capability_name: Threat Detection & Response Management
+  confidence: 0.75
+  evidence: POST /enduseralerts/enduserwatchlist/update Update enduseralerts tags for an email; GET /enduseralerts/page/{pageNum}
+    Read a page of alerts
+  reason: Alert and watchlist management for monitored end-user email identities is external threat monitoring
+    and triage, mapping to Threat Detection & Response Management.
