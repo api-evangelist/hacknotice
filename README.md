@@ -64,50 +64,134 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-HackNotice is an external threat-intelligence and cyber-risk platform founded in 2018 and
-headquartered in Austin, Texas. It continuously collects intelligence from ransomware groups,
-infostealer malware logs, data breaches, dark-web marketplaces, hacker forums and public
-disclosures, then matches that intelligence against the domains, employees, customers and vendors an
-organization asks it to watch. The product is organized around first-party domain monitoring,
-third-party vendor risk monitoring, end-user credential monitoring and threat research, plus
-AI-assisted vendor security assessments.
+HackNotice is an external threat-intelligence and cyber-risk platform founded in 2018 and headquartered in Austin, Texas. It continuously collects intelligence from ransomware groups, infostealer malware logs, data breaches, dark-web marketplaces, hacker forums and public disclosures, then matches that intelligence against the domains, employees, customers and vendors an organization asks it to watch. The product is organized around four monitoring services — first-party domain monitoring, third-party vendor risk monitoring, end-user credential monitoring, and threat research and investigations — plus AI-assisted vendor security assessments. HackNotice exposes this surface programmatically through a REST API documented as a public Postman collection at api-docs.hacknotice.com, a remote Model Context Protocol server at mcp.hacknotice.com whose tool catalogue answers anonymously, first-party n8n automation nodes on npm, and webhook, Splunk HEC and SIEM/SOAR alert delivery.
 
-## Public API surface
+**Areas:** Company · Security · Threat Intelligence · Cybersecurity · Dark Web Monitoring · Data Breaches · Credential Monitoring · Third-Party Risk Management · Vulnerability Management · Ransomware · Security Assessments · Alerts
 
-| Surface | Where |
+## HackNotice on APIs.io
+
+Everything profiled for HackNotice is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/hacknotice/](https://apis.io/providers/hacknotice/)** — or go straight to one of the APIs or properties below.
+
+### APIs (9)
+
+- [HackNotice MCP Server](https://apis.io/apis/hacknotice/hacknotice-mcp/) — Remote Model Context Protocol server operated by HackNotice, speaking JSON-RPC 2.0 over Streamable HTTP at https://mcp.hacknotice.com:13330/mcp. It…
+- [HackNotice Alerts API](https://apis.io/apis/hacknotice/hacknotice-alerts-api/) — Cross-service alert retrieval.
+- [HackNotice All Business Accounts API](https://apis.io/apis/hacknotice/hacknotice-all-business-accounts-api/) — Authentication, leak/leakfile search, customer records, metrics, habits, downloads, utilities and item notes shared by every business account.
+- [HackNotice Calc endpoints API](https://apis.io/apis/hacknotice/hacknotice-calc-endpoints-api/) — Aggregate/rollup calculation endpoints for breaches, threat actors and per-service alerts.
+- [HackNotice Deprecated API](https://apis.io/apis/hacknotice/hacknotice-deprecated-api/) — Endpoints HackNotice groups as deprecated in its published collection (dark hash alerts, Teams accounts).
+- [HackNotice Domain Business Accounts API](https://apis.io/apis/hacknotice/hacknotice-domain-business-accounts-api/) — First-party domain monitoring: domain watchlists, domain leaks, domain alerts and downloads.
+- [HackNotice Enduser Business Accounts API](https://apis.io/apis/hacknotice/hacknotice-enduser-business-accounts-api/) — End-user monitoring: end-user watchlists, end-user leaks and end-user alerts.
+- [HackNotice Research Service Accounts API](https://apis.io/apis/hacknotice/hacknotice-research-service-accounts-api/) — Threat-research search over terms, filenames and word pools, plus saved searches.
+- [HackNotice Third Party Accounts API](https://apis.io/apis/hacknotice/hacknotice-third-party-accounts-api/) — Third-party vendor monitoring: hacks, hack updates, watchlists, alerts and vendor security assessments.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Hacknotice Webhooks](https://apis.io/asyncapis/hacknotice/hacknotice-webhooks/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [hacknotice](https://apis.io/servers/hacknotice/hacknotice/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Hacknotice Openapi Overlay](https://apis.io/overlays/hacknotice/hacknotice-openapi-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Hacknotice Authentication](https://apis.io/security/hacknotice/hacknotice-authentication/)
+- [Hacknotice Domain Security](https://apis.io/security/hacknotice/hacknotice-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Hacknotice Plans Pricing](https://apis.io/plans/hacknotice/hacknotice-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Hacknotice Rate Limits](https://apis.io/rate-limits/hacknotice/hacknotice-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://hacknotice.com/)
+- [Documentation](https://hacknotice.zendesk.com/hc/en-us)
+- [Getting started](https://hacknotice.zendesk.com/hc/en-us/articles/13771563959828-Overview-Getting-Started-for-Sec-Teams)
+- [API reference](https://api-docs.hacknotice.com)
+- [Pricing](https://hacknotice.com/pricing/)
+- [Sign up](https://hacknotice.com/free-account/)
+- [Support](https://hacknotice.zendesk.com/hc/en-us)
+- [Blog](https://hacknotice.com/category/blog/)
+- [Terms of service](https://hacknotice.com/businesstandc/)
+- [Privacy policy](https://hacknotice.com/privacy/)
+- [GitHub](https://github.com/HackNotice)
+
+## API Evangelist rating
+
+**Kin Score 51.3** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
 |---|---|
-| REST API base | `https://extensionapi.hacknotice.com` |
-| API documentation | https://api-docs.hacknotice.com (a Postman collection, 262 requests) |
-| MCP server (remote, Streamable HTTP) | `https://mcp.hacknotice.com:13330/mcp` — 80 tools |
-| Help centre | https://hacknotice.zendesk.com/hc/en-us |
-| GitHub organization | https://github.com/HackNotice |
+| Discoverability | 68.3 |
+| Contract quality | 60.0 |
+| Contract governance | 4.5 |
+| Operational transparency | 31.6 |
+| Developer ergonomics | 49.4 |
+| Access clarity | 71.1 |
 
-HackNotice publishes **no OpenAPI**. `openapi/hacknotice-openapi.yml` in this repository is an API
-Evangelist derivation of HackNotice's own published Postman collection — 202 paths, 246 operations —
-not a provider artifact. Its provenance is recorded in `info.description` and in
-`overlays/hacknotice-openapi-overlay.yaml`.
+**Agent readiness 34.2** — agent-ready
 
-HackNotice's MCP server answers `initialize` and `tools/list` **anonymously**, so its full tool
-catalogue and every JSON Schema `inputSchema` are public; `tools/call` is gated on a per-user
-`X-HackNotice-Integration-Key`. The verbatim tool manifest is saved at
-`mcp/hacknotice-mcp-tools.json`, and `mcp/hacknotice-tool-crosswalk.yml` binds 54 of the 80 tools to
-the REST operations they declare as their backing routes.
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | documented (partial credit) |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | — |
 
-REST API access itself is granted to approved accounts only, after a 30-minute consultation call.
+**Regulatory alignment 24.5** — Horizontal (data, software, accessibility, platform)
 
-## Measured gaps
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/hacknotice/](https://apis.io/providers/hacknotice/).
 
-No `/.well-known` document on any host, no `security.txt`, no OAuth/OIDC metadata, no A2A agent card,
-no status page, no SLA, no API changelog, no deprecation policy (though a `Deprecated` folder exists
-in the published collection), no idempotency contract, no reversal operation or window for any
-destructive operation, no published compliance program or trust centre, errors that are a flat
-`{"message": "..."}` rather than RFC 9457, and no STIX/TAXII/MISP/OpenC2/CVE interchange in a
-threat-intelligence contract.
+## How this profile is made
 
-## Links
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
 
-- Website: https://hacknotice.com/
-- Pricing: https://hacknotice.com/pricing/
-- Blog: https://hacknotice.com/category/blog/ (RSS https://hacknotice.com/feed/)
-- Terms: https://hacknotice.com/businesstandc/ · Privacy: https://hacknotice.com/privacy/
-- Support: support@hacknotice.com
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for HackNotice: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/hacknotice/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
